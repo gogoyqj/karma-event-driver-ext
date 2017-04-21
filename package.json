@@ -1,12 +1,12 @@
 {
     "name": "karma-event-driver-ext",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "exports webdriverio/robotjs api to simulate user behavior in browser lol",
     "main": "cjs/index.js",
     "jsnext:main": "src/index.js",
     "scripts": {
         "build": "npm-run-all build:client build:server",
-        "build:client": "node_modules/.bin/babel src/event-driver-hooks.js -o cjs/event-drivers-hooks.js",
+        "build:client": "node_modules/.bin/babel src/event-driver-hooks.js -o cjs/event-driver-hooks.js",
         "build:server": "node_modules/.bin/babel src/index.js -o cjs/index.js",
         "prepublish": "npm-run-all build",
         "test": "echo \"Error: no test specified\" && exit 1"

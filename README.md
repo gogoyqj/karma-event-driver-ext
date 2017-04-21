@@ -50,7 +50,7 @@ module.exports = {
 Tests code [webdriverio api](http://webdriver.io/api.html):
 
 ```jsx
-    import eventHook, { beforeHook, afterHook, runCommand } from 'karma-event-driver-ext/cjs/event-drivers-hooks';
+    import eventHook, { beforeHook, afterHook, runCommand } from 'karma-event-driver-ext/cjs/event-driver-hooks';
     describe('Event Drive Tests', function() {
         // Notice: timeout, before,    after is chai-sinon api, if jasmine, should be:
         //                , beforeAll, afterAll
