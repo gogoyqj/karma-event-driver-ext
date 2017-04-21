@@ -73,7 +73,9 @@ Tests code [webdriverio api](http://webdriver.io/api.html):
                 a++;
             };
             await runCommand((browser) => {
-                browser.click(div); // most webdriverio api support. http://webdriver.io/api.html
+                // most webdriverio api support[except $, $$]. http://webdriver.io/api.html
+                // browser is just a proxy to receive command and format arguments [convert dom to query, eg], then send to server and run by webdriverio.
+                browser.click(div);
             });
             expect(a).to.equal(2);
         });
