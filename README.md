@@ -18,6 +18,14 @@ for example, in your browser side test code, call webdriverio api to simulate dr
     });
 ```
 
+### requirements
+
++ [selenium-server-standalone](http://selenium-release.storage.googleapis.com/3.3/selenium-server-standalone-3.3.1.jar)
++ [chromedriver](https://sites.google.com/a/chromium.org/chromedriver/), [more available drivers](http://www.seleniumhq.org/projects/webdriver/)
++ nodejs v6.10.0+
++ karma
+
+then must export path to $PATH where u put drivers* or copy drivers* to project directory. 
 
 ### usage
 
@@ -59,6 +67,7 @@ Tests code [webdriverio api](http://webdriver.io/api.html):
             var div = document.createElement('div');
             div.innerHTML = 'Click Me';
             document.body.appendChild(div);
+            div.id = 'assignedDiv'; // Tips: if element has no id, event-drivers-hook js will assign a unique id to it automatically. 
             var a = 1;
             div.onclick = function() {
                 a++;
@@ -76,6 +85,9 @@ Run Test:
 cli
 
 ```
+    // start selenium-server-standalone
+    java -jar selenium-server-standalone-3.3.1.jar
+    // start karma server && event-driver server
     node node_modules/karma-event-driver-ext
 ```
 
