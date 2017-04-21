@@ -221,7 +221,7 @@ var beforeHook = function () {
                                         return this;
                                     };
                                 });
-                                console.log('ready', message);
+                                // console.log('ready', message);
                                 resolve();
                             });
                         });
