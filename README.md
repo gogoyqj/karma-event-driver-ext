@@ -29,9 +29,9 @@ then must export path to $PATH where u put drivers* or copy drivers* to project 
 
 ### usage
 
-npm install
+#### npm install
 
-karma.conf.js
+#### karma.conf.js
 
 ```jsx
 module.exports = {
@@ -47,14 +47,14 @@ module.exports = {
 }
 ```
 
-Tests code [webdriverio api](http://webdriver.io/api.html):
+#### Tests code [get webdriverio api](http://webdriver.io/api.html):
+
+using mocha + chai-sinon
 
 ```jsx
     import eventHook, { beforeHook, afterHook, runCommand } from 'karma-event-driver-ext/cjs/event-driver-hooks';
     describe('Event Drive Tests', function() {
-        // Notice: timeout, before,    after is chai-sinon api, if jasmine, should be:
-        //                , beforeAll, afterAll
-        // worst of all is that jasmine has no support for returning a promise, u must call 'done' manually.
+        // Notice: timeout, before, after is chai-sinon api
         // increase timeout
         this.timeout(200000);
         before(async() => {
@@ -82,7 +82,58 @@ Tests code [webdriverio api](http://webdriver.io/api.html):
     });
 ```
 
-Run Test:
+using jasmine
+
+```jsx
+    import eventHook, { beforeHook, afterHook, runCommand } from 'karma-event-driver-ext/cjs/event-driver-hooks';
+    describe('Jasmine', function() {
+        // increase timeout
+        jasmine.DEFAULT_TIMEOUT_INTERVAL = 200000;
+        beforeAll((done) => {
+            beforeHook(done);
+        });
+        afterAll((done) => {
+            afterHook(done);
+        });
+        // can wrap a proxy of it
+        let _it = async (desc, fn) => {
+            it(desc, async (done) => {
+                await fn();
+                done();
+            })
+        };
+        _it('click element', async () => {
+            var div = document.createElement('div');
+            document.body.appendChild(div);
+            div.innerHTML = 'click me';
+            var a = 1;
+            div.onclick = function() {
+                a++;
+            };
+            await runCommand((browser) => {
+                browser.click(div);
+            });
+            expect(a).toBe(2);
+        });
+        // or
+        it('click element', async (done) => {
+            var div = document.createElement('div');
+            document.body.appendChild(div);
+            div.innerHTML = 'click me';
+            var a = 1;
+            div.onclick = function() {
+                a++;
+            };
+            await runCommand((browser) => {
+                browser.click(div);
+            });
+            expect(a).toBe(2);
+            done();
+        });
+    });
+```
+
+#### Run Test:
 
 cli
 

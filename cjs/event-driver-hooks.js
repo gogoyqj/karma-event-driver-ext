@@ -177,10 +177,11 @@ var config = function config(conf) {
 };
 /**
  * run first in before()
+ * @params {function} done if assigned, call done after promise resolved.
  * @return promise
  */
 var beforeHook = function () {
-    var _ref3 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee3() {
+    var _ref3 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee3(done) {
         var _config2, url, host, port;
 
         return _regenerator2.default.wrap(function _callee3$(_context3) {
@@ -192,7 +193,7 @@ var beforeHook = function () {
                             break;
                         }
 
-                        return _context3.abrupt('return');
+                        return _context3.abrupt('return', done && done());
 
                     case 2:
                         _config2 = _config, url = _config2.url, host = _config2.host, port = _config2.port;
@@ -231,8 +232,9 @@ var beforeHook = function () {
                     case 11:
                         fullScreen();
                         initialled = true;
+                        done && done();
 
-                    case 13:
+                    case 14:
                     case 'end':
                         return _context3.stop();
                 }
@@ -240,7 +242,7 @@ var beforeHook = function () {
         }, _callee3, undefined);
     }));
 
-    return function beforeHook() {
+    return function beforeHook(_x5) {
         return _ref3.apply(this, arguments);
     };
 }();
@@ -248,9 +250,10 @@ var beforeHook = function () {
  * call webdriverio api from browser side
  * @return promise
  * @param {function} action chain of calling webdriverio api
+ * @params {function} done if assigned, call done after promise resolve
  */
 var runCommand = function () {
-    var _ref4 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee4(action) {
+    var _ref4 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee4(action, done) {
         return _regenerator2.default.wrap(function _callee4$(_context4) {
             while (1) {
                 switch (_context4.prev = _context4.next) {
@@ -276,6 +279,9 @@ var runCommand = function () {
                         return waitingPromise;
 
                     case 8:
+                        done && done();
+
+                    case 9:
                     case 'end':
                         return _context4.stop();
                 }
@@ -283,23 +289,25 @@ var runCommand = function () {
         }, _callee4, undefined);
     }));
 
-    return function runCommand(_x5) {
+    return function runCommand(_x6, _x7) {
         return _ref4.apply(this, arguments);
     };
 }();
 /**
  * run last in after()
+ * @params {function} done if assigned, call done after promise resolve
  * @return promise
  */
 var afterHook = function () {
-    var _ref5 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee5() {
+    var _ref5 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee5(done) {
         return _regenerator2.default.wrap(function _callee5$(_context5) {
             while (1) {
                 switch (_context5.prev = _context5.next) {
                     case 0:
                         fullScreen(false);
+                        done && done();
 
-                    case 1:
+                    case 2:
                     case 'end':
                         return _context5.stop();
                 }
@@ -307,7 +315,7 @@ var afterHook = function () {
         }, _callee5, undefined);
     }));
 
-    return function afterHook() {
+    return function afterHook(_x8) {
         return _ref5.apply(this, arguments);
     };
 }();

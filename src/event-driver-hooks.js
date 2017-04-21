@@ -109,10 +109,11 @@ let config = (conf) => {
 };
 /**
  * run first in before()
+ * @params {function} done if assigned, call done after promise resolved.
  * @return promise
  */
-let beforeHook = async () => {
-    if (initialled) return;
+let beforeHook = async (done) => {
+    if (initialled) return done && done();
     let { url, host, port } = _config;
     if (!url) url = host + ':' + port;
     await loadScript('//' + url + '/socket.io/socket.io.js');
@@ -140,13 +141,15 @@ let beforeHook = async () => {
     await waitingPromise;
     fullScreen();
     initialled = true;
+    done && done();
 };
 /**
  * call webdriverio api from browser side
  * @return promise
  * @param {function} action chain of calling webdriverio api
+ * @params {function} done if assigned, call done after promise resolve
  */
-let runCommand = async (action) => {
+let runCommand = async (action, done) => {
     if (!initialled) return console.error('ensure beforeHook has been called');
     await waitingPromise;
     waitingPromise = wrapPromise((resolve, reject) => {
@@ -155,13 +158,16 @@ let runCommand = async (action) => {
     }, contextFrame);
     _runCommand(action);
     await waitingPromise;
+    done && done();
 };
 /**
  * run last in after()
+ * @params {function} done if assigned, call done after promise resolve
  * @return promise
  */
-let afterHook = async () => {
+let afterHook = async (done) => {
     fullScreen(false);
+    done && done();
 };
 
 export default {
