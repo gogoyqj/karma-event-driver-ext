@@ -133,7 +133,7 @@ let beforeHook = async () => {
                     return this;
                 };
             });
-            console.log('ready', message);
+            // console.log('ready', message);
             resolve();
         });
     });
