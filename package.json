@@ -1,0 +1,45 @@
+{
+    "name": "karma-event-driver-ext",
+    "version": "0.0.1",
+    "description": "exports webdriverio/robotjs api to simulate user behavior in browser lol",
+    "main": "cjs/index.js",
+    "jsnext:main": "src/index.js",
+    "scripts": {
+        "build": "npm-run-all build:client build:server",
+        "build:client": "node_modules/.bin/babel src/event-driver-hooks.js -o cjs/event-drivers-hooks.js",
+        "build:server": "node_modules/.bin/babel src/index.js -o cjs/index.js",
+        "prepublish": "npm-run-all build",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/gogoyqj/karma-event-driver-ext.git"
+    },
+    "keywords": [
+        "karma",
+        "webdriver",
+        "webdriverio",
+        "browser"
+    ],
+    "author": "skipper",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/gogoyqj/karma-event-driver-ext/issues"
+    },
+    "homepage": "https://github.com/gogoyqj/karma-event-driver-ext#readme",
+    "devDependencies": {
+        "babel": "^6.23.0",
+        "babel-cli": "^6.24.1",
+        "babel-core": "^6.24.1",
+        "babel-plugin-syntax-async-generators": "^6.13.0",
+        "babel-plugin-transform-runtime": "^6.23.0",
+        "babel-preset-latest": "^6.24.1",
+        "babel-preset-stage-0": "^6.24.1",
+        "npm-run-all": "^4.0.2"
+    },
+    "dependencies": {
+        "babel-polyfill": "^6.23.0",
+        "karma": "^1.6.0",
+        "karma-webdriverio-launcher": "git+ssh://git@github.com/gogoyqj/karma-webdriver-launcher.git"
+    }
+}
