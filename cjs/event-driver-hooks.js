@@ -1,7 +1,7 @@
 'use strict';
 
 exports.__esModule = true;
-exports.afterHook = exports.runCommand = exports.beforeHook = exports.config = exports.loadScript = undefined;
+exports.afterHook = exports.driveBrowser = exports.runCommand = exports.beforeHook = exports.config = exports.loadScript = undefined;
 
 var _extends2 = require('babel-runtime/helpers/extends');
 
@@ -252,7 +252,7 @@ var beforeHook = function () {
  * @param {function} action chain of calling webdriverio api
  * @params {function} done if assigned, call done after promise resolve
  */
-var runCommand = function () {
+var driveBrowser = exports.runCommand = runCommand = function () {
     var _ref4 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee4(action, done) {
         return _regenerator2.default.wrap(function _callee4$(_context4) {
             while (1) {
@@ -325,10 +325,12 @@ exports.default = {
     config: config,
     beforeHook: beforeHook,
     runCommand: runCommand,
+    driveBrowser: driveBrowser,
     afterHook: afterHook
 };
 exports.loadScript = loadScript;
 exports.config = config;
 exports.beforeHook = beforeHook;
 exports.runCommand = runCommand;
+exports.driveBrowser = driveBrowser;
 exports.afterHook = afterHook;

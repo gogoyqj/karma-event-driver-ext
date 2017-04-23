@@ -149,7 +149,7 @@ let beforeHook = async (done) => {
  * @param {function} action chain of calling webdriverio api
  * @params {function} done if assigned, call done after promise resolve
  */
-let runCommand = async (action, done) => {
+let driveBrowser = runCommand = async (action, done) => {
     if (!initialled) return console.error('ensure beforeHook has been called');
     await waitingPromise;
     waitingPromise = wrapPromise((resolve, reject) => {
@@ -175,6 +175,7 @@ export default {
     config,
     beforeHook,
     runCommand,
+    driveBrowser,
     afterHook
 }
 
@@ -183,5 +184,6 @@ export {
     config,
     beforeHook,
     runCommand,
+    driveBrowser,
     afterHook
 }
