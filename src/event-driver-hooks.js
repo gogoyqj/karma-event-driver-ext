@@ -1,18 +1,23 @@
 /**
  * browser side hooks for webdriver based event drive test
  */
-let browser = {
-    _stack: [] // tmp stack for browser[api]
+let config = (conf) => {
+    _config = {
+        ..._config,
+        ...conf
+    };
 };
 let _config = {
     port: 8848,
     host: '127.0.0.1'
 };
+let idCount = 0;
 let Connection;
 // get browserId
 let browserId = ((opener || parent).location.search || '').replace(/^\S+id=([0-9]+)\S*/g, (mat, id) => id);
 let switchFrame = parent !== window;
 
+// this ext can only run in karma default tap with an iframe#context
 let contextFrame = parent.document.getElementById('context');
 contextFrame = contextFrame && contextFrame.nodeName === 'IFRAME' ? contextFrame : null;
 let fullScreenStyle = { position: 'absolute', left: 0, top: 0, background: '#fff' },
@@ -22,7 +27,116 @@ if (contextFrame) {
         originalStyle[pro] = contextFrame.style[pro];
     }
 }
+/**
+ * @private Executer 
+ */
+function * Executer(browser) {
+    let tests = browser.__tests;
+    while (true) {
+        yield (tests.shift() || noop)(browser); 
+    }
+} // well, must put Executer here, or babel can't compile correct
 
+function noop() {}
+
+let initialled, $$Browser; 
+
+// webdriver api serial
+let waitingPromise = Promise.resolve();
+// promise ensure serial
+let serialPromiseResolve, serialPromiseReject;
+
+
+class $Browser {
+    constructor() {
+    }
+    /**
+     * @public $$addTest register test
+     * @param {Function} tests as many functions as u want
+     * @return {browser} calling chain 
+     */
+    $$addTest (...tests) {
+        tests.forEach((test) => {
+            this.__tests.push(async () => test(this));
+        });
+        return this;
+    }
+    /**
+     * @public $$action execute right now
+     * @param {Boolean} waitForIteratorNext wait for calling iterator.next
+     * @return {Promise} if !!waitForIteratorNext === false return a resolved promise, else a promise not resolved until iterator.next being called
+     */
+    async $$action (waitForIteratorNext) {
+        let actions = this.__stack.splice(0);
+        if (!initialled) return console.error('ensure beforeHook has been called');
+        let iteratorPromiseResolve, iteratorPromiseReject;
+        let prom;
+        if (waitForIteratorNext) {
+            prom = new Promise((resolve, reject) => {
+                iteratorPromiseResolve = resolve;
+                iteratorPromiseReject = reject;
+            });
+            // wait for iterator.next()
+            console.log('async callback add to iterator, ensure iterator.next will be called');
+            this.__tests.unshift(() => {
+                iteratorPromiseResolve()
+            });
+        };
+        await waitingPromise;
+        waitingPromise = wrapPromise((resolve, reject) => {
+            serialPromiseResolve = resolve;
+            serialPromiseReject = reject;
+        }, contextFrame);
+        this.__callDriver(actions);
+        await waitingPromise;
+        await prom;
+    }
+    /**
+     * @private __callDriver send Command to server
+     * @param {Array} actions
+     */
+    __callDriver(actions) {
+        if (!contextFrame) return console.warn('webdriver driving test can\'t run in current tab', location.href);
+        Connection.emit('runCommand', {
+            actions,
+            browserId,
+            switchFrame
+        });
+    }
+    /**
+     * parse browser.api(a, b, c) => ['api', [b, c]], so can be sent to the server and executed by the webdriver.
+     * @private __toRunnable
+     * @param {string} def api name
+     * @param {any} args arguments
+     */
+     __toRunnable(def, ...args) {
+        this.__stack.push([
+            def,
+            args.map((ele) => {
+                if (ele instanceof Element) {
+                    // if no id, allocate one
+                    ele.id = ele.id || (ele.className && ele.className.split(' ')[0] || 'WebDriverID').replace(/\-/g, '_') + idCount++;
+                    return '#' + ele.id;
+                } else if (typeof ele === 'function') {
+                    throw Error('can\'t use function ' + ele);
+                } else {
+                    return ele;
+                }
+            })
+        ]);
+        return this;
+    }
+}
+
+function Browser () {
+    this.__tests = []; // for register tests
+    this.__stack = [];// tmp stack for browser[api]
+    this.iterator = Executer(this);
+}
+
+$$Browser = Browser.prototype = new $Browser();
+
+let browser = new Browser();
 
 function fullScreen(full = true) {
     if (!contextFrame) return;
@@ -30,43 +144,6 @@ function fullScreen(full = true) {
     for (let pro in tar) {
         contextFrame.style[pro] = tar[pro];
     }
-}
-/**
- * send Command to server
- * @param {object} message
- */
-let _runCommand = (actions) => {
-    if (!contextFrame) return console.warn('webdriver driving test can\'t run in current tab', location.href);
-    if (typeof actions !== 'function') return console.error('runCommand only receive function actions');
-    actions(browser);
-    Connection.emit('runCommand', {
-        actions: browser._stack.splice(0),
-        browserId,
-        switchFrame
-    });
-};
-let idCount = 0;
-/**
- * parse browser.api(a, b, c) => ['api', [b, c]], so can be sent to the server and executed by the webdriver.
- * @private _toRunnable
- * @param {string} def api name
- * @param {any} args arguments
- */
-function _toRunnable(def, ...args) {
-    browser._stack.push([
-        def,
-        args.map((ele) => {
-            if (ele instanceof Element) {
-                // if no id, allocate one
-                ele.id = ele.id || (ele.className && ele.className.split(' ')[0] || 'WebDriverID').replace(/\-/g, '_') + idCount++;
-                return '#' + ele.id;
-            } else if (typeof ele === 'function') {
-                throw Error('can\'t use function ' + ele);
-            } else {
-                return ele;
-            }
-        })
-    ]);
 }
 
 /**
@@ -93,26 +170,19 @@ async function loadScript(src) {
     return prom;
 }
 
-
-let initialled, waitingPromise = Promise.resolve(), rs, rj;
-
 async function wrapPromise(fn, wait = true) {
     return new Promise((resolve, reject) => {
         wait ? fn(resolve, reject) : resolve();
     });
 }
-let config = (conf) => {
-    _config = {
-        ..._config,
-        ...conf
-    };
-};
 /**
  * run first in before()
  * @params {function} done if assigned, call done after promise resolved.
  * @return promise
  */
-let beforeHook = async (done) => {
+async function beforeHook(done) {
+    // height & width : 100%
+    fullScreen();
     if (initialled) return done && done();
     let { url, host, port } = _config;
     if (!url) url = host + ':' + port;
@@ -122,16 +192,15 @@ let beforeHook = async (done) => {
     Connection = io(url);
     Connection.on('runBack', (message) => {
         console.log('runBack', message);
-        message && !message.status  ? rs() : rj(message.status);
+        message && !message.status  ? serialPromiseResolve() : serialPromiseReject(message.status);
     });
     // whether there is contextFrame, wait
     waitingPromise = wrapPromise((resolve) => {
         Connection.on('ready', (message) => {
             let { supportedDefs = '' } = message;
             supportedDefs.split(' ').map((def) => {
-                browser[def] = function () {
-                    _toRunnable(def, ...arguments);
-                    return this;
+                $$Browser[def] = function () {
+                    return this.__toRunnable(def, ...arguments);
                 };
             });
             // console.log('ready', message);
@@ -139,33 +208,16 @@ let beforeHook = async (done) => {
         });
     });
     await waitingPromise;
-    fullScreen();
     initialled = true;
     done && done();
 };
-/**
- * call webdriverio api from browser side
- * @return promise
- * @param {function} action chain of calling webdriverio api
- * @params {function} done if assigned, call done after promise resolve
- */
-let driveBrowser = runCommand = async (action, done) => {
-    if (!initialled) return console.error('ensure beforeHook has been called');
-    await waitingPromise;
-    waitingPromise = wrapPromise((resolve, reject) => {
-        rs = resolve;
-        rj = reject;
-    }, contextFrame);
-    _runCommand(action);
-    await waitingPromise;
-    done && done();
-};
+
 /**
  * run last in after()
  * @params {function} done if assigned, call done after promise resolve
  * @return promise
  */
-let afterHook = async (done) => {
+async function afterHook(done) {
     fullScreen(false);
     done && done();
 };
@@ -173,17 +225,15 @@ let afterHook = async (done) => {
 export default {
     loadScript,
     config,
+    browser,
     beforeHook,
-    runCommand,
-    driveBrowser,
     afterHook
 }
 
 export {
     loadScript,
     config,
+    browser,
     beforeHook,
-    runCommand,
-    driveBrowser,
     afterHook
 }
