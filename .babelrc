@@ -6,7 +6,7 @@
             }
         }], "stage-0"
     ],
-    "plugins": ["syntax-async-generators", ["transform-runtime", {
+    "plugins": ["syntax-async-generators", "babel-plugin-transform-decorators-legacy", ["transform-runtime", {
         "helpers": true,
         "polyfill": true,
         "regenerator": true,

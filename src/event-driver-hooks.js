@@ -1,3 +1,4 @@
+import { autobind } from 'core-decorators';
 /**
  * browser side hooks for webdriver based event drive test
  */
@@ -33,7 +34,8 @@ if (contextFrame) {
 function * Executer(browser) {
     let tests = browser.__tests;
     while (true) {
-        yield (tests.shift() || noop)(browser); 
+        let status = yield;
+        (tests.shift() || noop)(status);
     }
 } // well, must put Executer here, or babel can't compile correct
 
@@ -49,47 +51,66 @@ let serialPromiseResolve, serialPromiseReject;
 
 class $Browser {
     constructor() {
+        this.__tests;
+        this.__stack;
+        this.executer;
     }
     /**
      * @public $$addTest register test
      * @param {Function} tests as many functions as u want
      * @return {browser} calling chain 
      */
+    @autobind
     $$addTest (...tests) {
         tests.forEach((test) => {
-            this.__tests.push(async () => test(this));
+            this.__tests.push(async () => {
+                await test(this);
+                // auto run next test
+                this.executer.next();
+            });
         });
         return this;
     }
     /**
      * @public $$action execute right now
-     * @param {Boolean} waitForIteratorNext wait for calling iterator.next
-     * @return {Promise} if !!waitForIteratorNext === false return a resolved promise, else a promise not resolved until iterator.next being called
+     * @param {Boolean} waitForExecuterNext wait for calling executer.next
+     * @param {Function} done callback
+     * @return {Promise} if !!waitForExecuterNext === false return a resolved promise, else a promise not resolved until executer.next being called
      */
-    async $$action (waitForIteratorNext) {
+    async $$action (waitForExecuterNext, done) {
         let actions = this.__stack.splice(0);
         if (!initialled) return console.error('ensure beforeHook has been called');
-        let iteratorPromiseResolve, iteratorPromiseReject;
+        let executerPromiseResolve, executerPromiseReject;
         let prom;
-        if (waitForIteratorNext) {
+        if (waitForExecuterNext) {
             prom = new Promise((resolve, reject) => {
-                iteratorPromiseResolve = resolve;
-                iteratorPromiseReject = reject;
+                executerPromiseResolve = resolve;
+                executerPromiseReject = reject;
             });
-            // wait for iterator.next()
-            console.log('async callback add to iterator, ensure iterator.next will be called');
-            this.__tests.unshift(() => {
-                iteratorPromiseResolve()
+            // wait for executer.next()
+            console.log('async callback add to executer, ensure executer.next(rejectReason) will be called');
+            // !!status === true, then reject
+            this.__tests.unshift((status) => {
+                !!status ? executerPromiseReject(status) : executerPromiseResolve()
             });
         };
         await waitingPromise;
-        waitingPromise = wrapPromise((resolve, reject) => {
-            serialPromiseResolve = resolve;
-            serialPromiseReject = reject;
-        }, contextFrame);
-        this.__callDriver(actions);
-        await waitingPromise;
+        if (actions.length) {
+            waitingPromise = wrapPromise((resolve, reject) => {
+                serialPromiseResolve = resolve;
+                serialPromiseReject = reject;
+            }, contextFrame);
+            this.__callDriver(actions);
+            await waitingPromise;
+        }
         await prom;
+        done && done();
+    }
+    /**
+     * @public $$actionAndWait equal to $$action('waitForExecuterNext')
+     */
+    async $$actionAndWait (done) {
+        await this.$$action(true, done);
     }
     /**
      * @private __callDriver send Command to server
@@ -131,7 +152,8 @@ class $Browser {
 function Browser () {
     this.__tests = []; // for register tests
     this.__stack = [];// tmp stack for browser[api]
-    this.iterator = Executer(this);
+    this.executer = Executer(this);
+    this.executer.next(); // start
 }
 
 $$Browser = Browser.prototype = new $Browser();
