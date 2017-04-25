@@ -28,16 +28,6 @@ if (contextFrame) {
         originalStyle[pro] = contextFrame.style[pro];
     }
 }
-/**
- * @private Executer 
- */
-function * Executer(browser) {
-    let tests = browser.__tests;
-    while (true) {
-        let status = yield;
-        (tests.shift() || noop)(status);
-    }
-} // well, must put Executer here, or babel can't compile correct
 
 function noop() {}
 
@@ -53,44 +43,71 @@ class $Browser {
     constructor() {
         this.__tests;
         this.__stack;
-        this.executer;
     }
     /**
-     * @public $$addTest register test
-     * @param {Function} tests as many functions as u want
-     * @return {browser} calling chain 
+     * @public $next execute next serial test or resolve/reject a waiting promise
+     * @param {any} status !!status ? reject(status) : resolve()
      */
     @autobind
-    $$addTest (...tests) {
+    async $next (status) {
+        let action = this.__tests.shift();
+        // call before $serial
+        if (!action && !this.__autoStart) this.__autoStart = true;
+        if (action) {
+            await action(status).then(noop, this.__rejectSerial);
+        } else if (this.__resolveSerial) {
+            this.__resolveSerial();
+        }
+    }
+    /**
+     * @public $serial register serial test
+     * @param {Function} tests as many functions as u want
+     * @return {Promise} 
+     */
+    @autobind
+    $serial (...tests) {
+        this.__prom = this.__prom || new Promise((rs, rj) => {
+            this.__resolveSerial = () => {
+                rs();
+                this.__resolveSerial = null;
+            };
+            this.__rejectSerial = (e) => {
+                rj(e);
+                this.__rejectSerial = null;
+            };
+        });
         tests.forEach((test) => {
             this.__tests.push(async () => {
                 await test(this);
                 // auto run next test
-                this.executer.next();
+                await this.$next();
             });
         });
-        return this;
+        if (this.__autoStart) {
+            this.$next();
+            this.__autoStart = false;
+        }
+        return this.__prom;
     }
     /**
-     * @public $$action execute right now
-     * @param {Boolean} waitForExecuterNext wait for calling executer.next
+     * @public $apply execute right now
+     * @param {Boolean} applyAndWaitForNext wait for calling browser.$next
      * @param {Function} done callback
-     * @return {Promise} if !!waitForExecuterNext === false return a resolved promise, else a promise not resolved until executer.next being called
+     * @return {Promise} if !!applyAndWaitForNext === false return a resolved promise, else a promise not resolved until browser.$next being called
      */
-    async $$action (waitForExecuterNext, done) {
+    async $apply (applyAndWaitForNext, done) {
         let actions = this.__stack.splice(0);
         if (!initialled) return console.error('ensure beforeHook has been called');
         let executerPromiseResolve, executerPromiseReject;
         let prom;
-        if (waitForExecuterNext) {
+        if (applyAndWaitForNext) {
             prom = new Promise((resolve, reject) => {
                 executerPromiseResolve = resolve;
                 executerPromiseReject = reject;
             });
-            // wait for executer.next()
-            console.log('async callback add to executer, ensure executer.next(rejectReason) will be called');
+            console.log('add a waiting promise, ensure browser.$next(status) is called at right time');
             // !!status === true, then reject
-            this.__tests.unshift((status) => {
+            this.__tests.unshift(async (status) => {
                 !!status ? executerPromiseReject(status) : executerPromiseResolve()
             });
         };
@@ -107,10 +124,10 @@ class $Browser {
         done && done();
     }
     /**
-     * @public $$actionAndWait equal to $$action('waitForExecuterNext')
+     * @public $applyAndWaitForNext equal to $$action('applyAndWaitForNext')
      */
-    async $$actionAndWait (done) {
-        await this.$$action(true, done);
+    async $applyAndWaitForNext (done) {
+        await this.$apply(true, done);
     }
     /**
      * @private __callDriver send Command to server
@@ -152,8 +169,7 @@ class $Browser {
 function Browser () {
     this.__tests = []; // for register tests
     this.__stack = [];// tmp stack for browser[api]
-    this.executer = Executer(this);
-    this.executer.next(); // start
+    this.__prom  = null;
 }
 
 $$Browser = Browser.prototype = new $Browser();

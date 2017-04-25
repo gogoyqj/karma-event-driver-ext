@@ -1,5 +1,5 @@
 import { beforeHook, afterHook, browser } from 'karma-event-driver-ext/cjs/event-driver-hooks';
-let { executer, $$addTest } = browser;
+let { $serial } = browser;
 describe('Event Drive Tests', function() {
     // increase timeout
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 2000000;
@@ -22,7 +22,7 @@ describe('Event Drive Tests', function() {
         };
         await browser
             .click(div)
-            .$$action();
+            .$apply();
         expect(a).toBe(2);
         done();
     });
@@ -35,14 +35,14 @@ describe('Event Drive Tests', function() {
             a++;
             setTimeout(() => {
                 a++;
-                executer.next();
+                browser.$next();
             }, 500);
         };
         document.body.appendChild(div);
 
         await browser
             .click(div)
-            .$$action('wait'); // wait for executer.next()
+            .$apply('wait');
         expect(a).toBe(3);
         done();
     });
@@ -55,29 +55,26 @@ describe('Event Drive Tests', function() {
             a++;
             setTimeout(() => {
                 a++;
-                executer.next();
+                browser.$next();
             }, 500);
         };
         let render = () => {
             document.body.appendChild(div);
-            // start executing register tests
-            executer.next();
+            browser.$next();
         }
 
-        // register two test execute in serial, and won't execute util calling executor.next()
-        $$addTest(
+        $serial(
             async () => {
                 await browser
                     .click(div)
-                    .$$action('wait');
+                    .$apply('wait');
                 expect(a).toBe(3);
             },
             async () => {
                 await browser
                     .click(div)
-                    .$$action('wait');
+                    .$apply('wait');
                 expect(a).toBe(5);
-                // finish, call 'done'
                 done();
             }
         );

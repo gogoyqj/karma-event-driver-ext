@@ -1,5 +1,5 @@
 import eventHook, { beforeHook, afterHook, browser } from 'karma-event-driver-ext/cjs/event-driver-hooks';
-let { $$addTest, executer } = browser;
+let { $serial } = browser;
 
 describe('Event Drive Tests', function() {
     this.timeout(200000);
@@ -18,18 +18,18 @@ describe('Event Drive Tests', function() {
         div.onclick = function() {
             setTimeout(() => {
                 a++;
-                executer.next();
+                browser.$next();
             }, 500)
         };
 
         await browser
             .click(div)
-            .$$action('wait');
+            .$apply('wait');
         expect(a).to.equal(2);
 
         await browser
             .click(div)
-            .$$action('wait');
+            .$apply('wait');
 
         expect(a).to.equal(3);
     });

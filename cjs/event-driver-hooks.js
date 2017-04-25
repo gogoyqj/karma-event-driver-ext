@@ -7,6 +7,10 @@ var _getOwnPropertyDescriptor = require('babel-runtime/core-js/object/get-own-pr
 
 var _getOwnPropertyDescriptor2 = _interopRequireDefault(_getOwnPropertyDescriptor);
 
+var _regenerator = require('babel-runtime/regenerator');
+
+var _regenerator2 = _interopRequireDefault(_regenerator);
+
 var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
@@ -18,10 +22,6 @@ var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 var _promise = require('babel-runtime/core-js/promise');
 
 var _promise2 = _interopRequireDefault(_promise);
-
-var _regenerator = require('babel-runtime/regenerator');
-
-var _regenerator2 = _interopRequireDefault(_regenerator);
 
 var _extends2 = require('babel-runtime/helpers/extends');
 
@@ -35,11 +35,11 @@ var _desc, _value, _class;
  * @return promise
  */
 var loadScript = function () {
-    var _ref4 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee4(src) {
+    var _ref6 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee6(src) {
         var script, rs, rj, timer, prom;
-        return _regenerator2.default.wrap(function _callee4$(_context5) {
+        return _regenerator2.default.wrap(function _callee6$(_context6) {
             while (1) {
-                switch (_context5.prev = _context5.next) {
+                switch (_context6.prev = _context6.next) {
                     case 0:
                         script = document.createElement('script');
 
@@ -61,42 +61,42 @@ var loadScript = function () {
                         timer = setTimeout(function () {
                             return rj('load ' + src + ' time out');
                         }, 10000);
-                        return _context5.abrupt('return', prom);
+                        return _context6.abrupt('return', prom);
 
                     case 9:
                     case 'end':
-                        return _context5.stop();
+                        return _context6.stop();
                 }
             }
-        }, _callee4, this);
+        }, _callee6, this);
     }));
 
-    return function loadScript(_x5) {
-        return _ref4.apply(this, arguments);
+    return function loadScript(_x7) {
+        return _ref6.apply(this, arguments);
     };
 }();
 
 var wrapPromise = function () {
-    var _ref5 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee5(fn) {
+    var _ref7 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee7(fn) {
         var wait = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-        return _regenerator2.default.wrap(function _callee5$(_context6) {
+        return _regenerator2.default.wrap(function _callee7$(_context7) {
             while (1) {
-                switch (_context6.prev = _context6.next) {
+                switch (_context7.prev = _context7.next) {
                     case 0:
-                        return _context6.abrupt('return', new _promise2.default(function (resolve, reject) {
+                        return _context7.abrupt('return', new _promise2.default(function (resolve, reject) {
                             wait ? fn(resolve, reject) : resolve();
                         }));
 
                     case 1:
                     case 'end':
-                        return _context6.stop();
+                        return _context7.stop();
                 }
             }
-        }, _callee5, this);
+        }, _callee7, this);
     }));
 
-    return function wrapPromise(_x6) {
-        return _ref5.apply(this, arguments);
+    return function wrapPromise(_x8) {
+        return _ref7.apply(this, arguments);
     };
 }();
 /**
@@ -107,28 +107,28 @@ var wrapPromise = function () {
 
 
 var beforeHook = function () {
-    var _ref6 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee6(done) {
+    var _ref8 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee8(done) {
         var _config2, url, host, port;
 
-        return _regenerator2.default.wrap(function _callee6$(_context7) {
+        return _regenerator2.default.wrap(function _callee8$(_context8) {
             while (1) {
-                switch (_context7.prev = _context7.next) {
+                switch (_context8.prev = _context8.next) {
                     case 0:
                         // height & width : 100%
                         fullScreen();
 
                         if (!initialled) {
-                            _context7.next = 3;
+                            _context8.next = 3;
                             break;
                         }
 
-                        return _context7.abrupt('return', done && done());
+                        return _context8.abrupt('return', done && done());
 
                     case 3:
                         _config2 = _config, url = _config2.url, host = _config2.host, port = _config2.port;
 
                         if (!url) url = host + ':' + port;
-                        _context7.next = 7;
+                        _context8.next = 7;
                         return loadScript('//' + url + '/socket.io/socket.io.js');
 
                     case 7:
@@ -154,7 +154,7 @@ var beforeHook = function () {
                                 resolve();
                             });
                         });
-                        _context7.next = 12;
+                        _context8.next = 12;
                         return waitingPromise;
 
                     case 12:
@@ -163,14 +163,14 @@ var beforeHook = function () {
 
                     case 14:
                     case 'end':
-                        return _context7.stop();
+                        return _context8.stop();
                 }
             }
-        }, _callee6, this);
+        }, _callee8, this);
     }));
 
-    return function beforeHook(_x8) {
-        return _ref6.apply(this, arguments);
+    return function beforeHook(_x10) {
+        return _ref8.apply(this, arguments);
     };
 }();
 
@@ -180,24 +180,24 @@ var beforeHook = function () {
  * @return promise
  */
 var afterHook = function () {
-    var _ref7 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee7(done) {
-        return _regenerator2.default.wrap(function _callee7$(_context8) {
+    var _ref9 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee9(done) {
+        return _regenerator2.default.wrap(function _callee9$(_context9) {
             while (1) {
-                switch (_context8.prev = _context8.next) {
+                switch (_context9.prev = _context9.next) {
                     case 0:
                         fullScreen(false);
                         done && done();
 
                     case 2:
                     case 'end':
-                        return _context8.stop();
+                        return _context9.stop();
                 }
             }
-        }, _callee7, this);
+        }, _callee9, this);
     }));
 
-    return function afterHook(_x9) {
-        return _ref7.apply(this, arguments);
+    return function afterHook(_x11) {
+        return _ref9.apply(this, arguments);
     };
 }();
 
@@ -234,8 +234,6 @@ function _applyDecoratedDescriptor(target, property, decorators, descriptor, con
     return desc;
 }
 
-var _marked = [Executer].map(_regenerator2.default.mark);
-
 /**
  * browser side hooks for webdriver based event drive test
  */
@@ -264,40 +262,6 @@ if (contextFrame) {
         originalStyle[pro] = contextFrame.style[pro];
     }
 }
-/**
- * @private Executer 
- */
-function Executer(browser) {
-    var tests, status;
-    return _regenerator2.default.wrap(function Executer$(_context) {
-        while (1) {
-            switch (_context.prev = _context.next) {
-                case 0:
-                    tests = browser.__tests;
-
-                case 1:
-                    if (!true) {
-                        _context.next = 8;
-                        break;
-                    }
-
-                    _context.next = 4;
-                    return;
-
-                case 4:
-                    status = _context.sent;
-
-                    (tests.shift() || noop)(status);
-                    _context.next = 1;
-                    break;
-
-                case 8:
-                case 'end':
-                    return _context.stop();
-            }
-        }
-    }, _marked[0], this);
-} // well, must put Executer here, or babel can't compile correct
 
 function noop() {}
 
@@ -316,25 +280,84 @@ var $Browser = (_class = function () {
 
         this.__tests;
         this.__stack;
-        this.executer;
     }
     /**
-     * @public $$addTest register test
-     * @param {Function} tests as many functions as u want
-     * @return {browser} calling chain 
+     * @public $next execute next serial test or resolve/reject a waiting promise
+     * @param {any} status !!status ? reject(status) : resolve()
      */
 
 
-    $Browser.prototype.$$addTest = function $$addTest() {
+    $Browser.prototype.$next = function () {
+        var _ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee(status) {
+            var action;
+            return _regenerator2.default.wrap(function _callee$(_context) {
+                while (1) {
+                    switch (_context.prev = _context.next) {
+                        case 0:
+                            action = this.__tests.shift();
+                            // call before $serial
+
+                            if (!action && !this.__autoStart) this.__autoStart = true;
+
+                            if (!action) {
+                                _context.next = 7;
+                                break;
+                            }
+
+                            _context.next = 5;
+                            return action(status).then(noop, this.__rejectSerial);
+
+                        case 5:
+                            _context.next = 8;
+                            break;
+
+                        case 7:
+                            if (this.__resolveSerial) {
+                                this.__resolveSerial();
+                            }
+
+                        case 8:
+                        case 'end':
+                            return _context.stop();
+                    }
+                }
+            }, _callee, this);
+        }));
+
+        function $next(_x) {
+            return _ref.apply(this, arguments);
+        }
+
+        return $next;
+    }();
+    /**
+     * @public $serial register serial test
+     * @param {Function} tests as many functions as u want
+     * @return {Promise} 
+     */
+
+
+    $Browser.prototype.$serial = function $serial() {
         var _this = this;
+
+        this.__prom = this.__prom || new _promise2.default(function (rs, rj) {
+            _this.__resolveSerial = function () {
+                rs();
+                _this.__resolveSerial = null;
+            };
+            _this.__rejectSerial = function (e) {
+                rj(e);
+                _this.__rejectSerial = null;
+            };
+        });
 
         for (var _len = arguments.length, tests = Array(_len), _key = 0; _key < _len; _key++) {
             tests[_key] = arguments[_key];
         }
 
         tests.forEach(function (test) {
-            _this.__tests.push((0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee() {
-                return _regenerator2.default.wrap(function _callee$(_context2) {
+            _this.__tests.push((0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2() {
+                return _regenerator2.default.wrap(function _callee2$(_context2) {
                     while (1) {
                         switch (_context2.prev = _context2.next) {
                             case 0:
@@ -342,65 +365,87 @@ var $Browser = (_class = function () {
                                 return test(_this);
 
                             case 2:
-                                // auto run next test
-                                _this.executer.next();
+                                _context2.next = 4;
+                                return _this.$next();
 
-                            case 3:
+                            case 4:
                             case 'end':
                                 return _context2.stop();
                         }
                     }
-                }, _callee, _this);
+                }, _callee2, _this);
             })));
         });
-        return this;
+        if (this.__autoStart) {
+            this.$next();
+            this.__autoStart = false;
+        }
+        return this.__prom;
     };
     /**
-     * @public $$action execute right now
-     * @param {Boolean} waitForExecuterNext wait for calling executer.next
+     * @public $apply execute right now
+     * @param {Boolean} applyAndWaitForNext wait for calling browser.$next
      * @param {Function} done callback
-     * @return {Promise} if !!waitForExecuterNext === false return a resolved promise, else a promise not resolved until executer.next being called
+     * @return {Promise} if !!applyAndWaitForNext === false return a resolved promise, else a promise not resolved until browser.$next being called
      */
 
 
-    $Browser.prototype.$$action = function () {
-        var _ref2 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2(waitForExecuterNext, done) {
+    $Browser.prototype.$apply = function () {
+        var _ref3 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee4(applyAndWaitForNext, done) {
+            var _this2 = this;
+
             var actions, executerPromiseResolve, executerPromiseReject, prom;
-            return _regenerator2.default.wrap(function _callee2$(_context3) {
+            return _regenerator2.default.wrap(function _callee4$(_context4) {
                 while (1) {
-                    switch (_context3.prev = _context3.next) {
+                    switch (_context4.prev = _context4.next) {
                         case 0:
                             actions = this.__stack.splice(0);
 
                             if (initialled) {
-                                _context3.next = 3;
+                                _context4.next = 3;
                                 break;
                             }
 
-                            return _context3.abrupt('return', console.error('ensure beforeHook has been called'));
+                            return _context4.abrupt('return', console.error('ensure beforeHook has been called'));
 
                         case 3:
                             executerPromiseResolve = void 0, executerPromiseReject = void 0;
                             prom = void 0;
 
-                            if (waitForExecuterNext) {
+                            if (applyAndWaitForNext) {
                                 prom = new _promise2.default(function (resolve, reject) {
                                     executerPromiseResolve = resolve;
                                     executerPromiseReject = reject;
                                 });
-                                // wait for executer.next()
-                                console.log('async callback add to executer, ensure executer.next(rejectReason) will be called');
+                                console.log('add a waiting promise, ensure browser.$next(status) is called at right time');
                                 // !!status === true, then reject
-                                this.__tests.unshift(function (status) {
-                                    !!status ? executerPromiseReject(status) : executerPromiseResolve();
-                                });
+                                this.__tests.unshift(function () {
+                                    var _ref4 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee3(status) {
+                                        return _regenerator2.default.wrap(function _callee3$(_context3) {
+                                            while (1) {
+                                                switch (_context3.prev = _context3.next) {
+                                                    case 0:
+                                                        !!status ? executerPromiseReject(status) : executerPromiseResolve();
+
+                                                    case 1:
+                                                    case 'end':
+                                                        return _context3.stop();
+                                                }
+                                            }
+                                        }, _callee3, _this2);
+                                    }));
+
+                                    return function (_x4) {
+                                        return _ref4.apply(this, arguments);
+                                    };
+                                }());
                             };
-                            _context3.next = 9;
+                            _context4.next = 9;
                             return waitingPromise;
 
                         case 9:
                             if (!actions.length) {
-                                _context3.next = 14;
+                                _context4.next = 14;
                                 break;
                             }
 
@@ -409,11 +454,11 @@ var $Browser = (_class = function () {
                                 serialPromiseReject = reject;
                             }, contextFrame);
                             this.__callDriver(actions);
-                            _context3.next = 14;
+                            _context4.next = 14;
                             return waitingPromise;
 
                         case 14:
-                            _context3.next = 16;
+                            _context4.next = 16;
                             return prom;
 
                         case 16:
@@ -421,45 +466,45 @@ var $Browser = (_class = function () {
 
                         case 17:
                         case 'end':
-                            return _context3.stop();
-                    }
-                }
-            }, _callee2, this);
-        }));
-
-        function $$action(_x, _x2) {
-            return _ref2.apply(this, arguments);
-        }
-
-        return $$action;
-    }();
-    /**
-     * @public $$actionAndWait equal to $$action('waitForExecuterNext')
-     */
-
-
-    $Browser.prototype.$$actionAndWait = function () {
-        var _ref3 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee3(done) {
-            return _regenerator2.default.wrap(function _callee3$(_context4) {
-                while (1) {
-                    switch (_context4.prev = _context4.next) {
-                        case 0:
-                            _context4.next = 2;
-                            return this.$$action(true, done);
-
-                        case 2:
-                        case 'end':
                             return _context4.stop();
                     }
                 }
-            }, _callee3, this);
+            }, _callee4, this);
         }));
 
-        function $$actionAndWait(_x3) {
+        function $apply(_x2, _x3) {
             return _ref3.apply(this, arguments);
         }
 
-        return $$actionAndWait;
+        return $apply;
+    }();
+    /**
+     * @public $applyAndWaitForNext equal to $$action('applyAndWaitForNext')
+     */
+
+
+    $Browser.prototype.$applyAndWaitForNext = function () {
+        var _ref5 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee5(done) {
+            return _regenerator2.default.wrap(function _callee5$(_context5) {
+                while (1) {
+                    switch (_context5.prev = _context5.next) {
+                        case 0:
+                            _context5.next = 2;
+                            return this.$apply(true, done);
+
+                        case 2:
+                        case 'end':
+                            return _context5.stop();
+                    }
+                }
+            }, _callee5, this);
+        }));
+
+        function $applyAndWaitForNext(_x5) {
+            return _ref5.apply(this, arguments);
+        }
+
+        return $applyAndWaitForNext;
     }();
     /**
      * @private __callDriver send Command to server
@@ -503,14 +548,13 @@ var $Browser = (_class = function () {
     };
 
     return $Browser;
-}(), (_applyDecoratedDescriptor(_class.prototype, '$$addTest', [_coreDecorators.autobind], (0, _getOwnPropertyDescriptor2.default)(_class.prototype, '$$addTest'), _class.prototype)), _class);
+}(), (_applyDecoratedDescriptor(_class.prototype, '$next', [_coreDecorators.autobind], (0, _getOwnPropertyDescriptor2.default)(_class.prototype, '$next'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, '$serial', [_coreDecorators.autobind], (0, _getOwnPropertyDescriptor2.default)(_class.prototype, '$serial'), _class.prototype)), _class);
 
 
 function Browser() {
     this.__tests = []; // for register tests
     this.__stack = []; // tmp stack for browser[api]
-    this.executer = Executer(this);
-    this.executer.next(); // start
+    this.__prom = null;
 }
 
 $$Browser = Browser.prototype = new $Browser();

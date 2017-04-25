@@ -15,19 +15,19 @@ for example, in your browser side test code, call webdriverio api to simulate dr
             .buttonDown() // left-mouse down
             .moveTo(null, 0, -100) // mouse-move -100 on the Y-axis
             .buttonUp() // left-mouse up
-            .$$action(); // execute
+            .$apply(); // execute
 ```
 
 #### How it works
 
-browser in karma-event-driver-ext is just a proxy to receive command. while a webdriverio-like api being called, proxy will format arguments received, for example, convert an argument which type is Element to unique query, then call $$action to sends drive-commands to socket server and wait for executing response. 
+browser in karma-event-driver-ext is just a proxy to receive command. while a webdriverio-like api being called, proxy will format arguments received, for example, convert an argument which type is Element to unique query, then call $apply to sends drive-commands to socket server and wait for executing response. 
 
 webdriverio is used to drive the browser and simulate user-behavior.
 
 
 Tips: 
 
-+ must call $$action, a promise will be returned.
++ must call $apply, a promise will be returned.
 + if Element has no id, event-drivers-hook js will assign a unique id to it automatically. 
 + most webdriverio api support[except $, $$, then]. [more api](http://webdriver.io/api.html)
 
@@ -65,7 +65,7 @@ module.exports = {
 
 ```jsx
     import { beforeHook, afterHook, browser } from 'karma-event-driver-ext/cjs/event-driver-hooks';
-    let { executer, $$addTest } = browser;
+    let { $serial } = browser;
     describe('Test', function() {
         // first increase timeout
         ...
@@ -83,7 +83,7 @@ module.exports = {
         it('Example', async () => {
             await browser
                 .click(document.body)
-                .$$action();
+                .$apply();
             ...
         })
     });
