@@ -343,11 +343,11 @@ var $Browser = (_class = function () {
         this.__prom = this.__prom || new _promise2.default(function (rs, rj) {
             _this.__resolveSerial = function () {
                 rs();
-                _this.__resolveSerial = null;
+                _this.__prom = _this.__resolveSerial = null;
             };
             _this.__rejectSerial = function (e) {
                 rj(e);
-                _this.__rejectSerial = null;
+                _this.__prom = _this.__rejectSerial = null;
             };
         });
 

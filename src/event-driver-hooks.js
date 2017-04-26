@@ -69,11 +69,11 @@ class $Browser {
         this.__prom = this.__prom || new Promise((rs, rj) => {
             this.__resolveSerial = () => {
                 rs();
-                this.__resolveSerial = null;
+                this.__prom = this.__resolveSerial = null;
             };
             this.__rejectSerial = (e) => {
                 rj(e);
-                this.__rejectSerial = null;
+                this.__prom = this.__rejectSerial = null;
             };
         });
         tests.forEach((test) => {

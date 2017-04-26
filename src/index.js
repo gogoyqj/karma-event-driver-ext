@@ -4,6 +4,7 @@ const path = require('path');
 
 // browsers with driver
 let browsers = [];
+let focusMap = {};
 
 function getBrowserById(id) {
      return browsers.find((browser) => browser.id === id);
@@ -35,15 +36,23 @@ io
             let driver = browser.driver;
             let prom = Promise.resolve();
             if (actions.length) {
-                // switch to top first
-                prom = driver.frameParent();
-                // switch to frame if any actions defined
-                prom = switchFrame && actions.length ? driver.frame('context').then(() => null, () => {
-                    let info = 'can\'t switch to frame#context';
-                    sendBack(socket, {
-                        status: info
-                    });
-                }) : prom;
+                // avoid useless switch
+                // whether switched to iframe#context
+                if (focusMap[browserId]) {
+                    // tell messages come from iframe#context or top frame
+                    if (!switchFrame) prom = driver.frameParent();
+                } else {
+                    if (switchFrame) {
+                        prom = driver.frame('context').then(() => {
+                            focusMap[browserId] = 'context';
+                        }, () => {
+                            let info = 'can\'t switch to frame#context';
+                            sendBack(socket, {
+                                status: info
+                            });
+                        });
+                    }
+                }
                 // run action chain
                 actions.forEach(([action, args]) => {
                     prom = prom.then(() => driver[action](...args).then(() => null, (e) => {
@@ -77,7 +86,10 @@ let init = ({ onExit } = {}) => {
     // ever tried to share socketServer with Karma
     // let SocketSever = server._injector.get('socketServer');
 
-    server.on('browser_register', () => {
+    server.on('browser_register', (browser) => {
+        // reload full page will trigger browser_register, then iframe#context will lose focus
+        let { id } = browser;
+        delete focusMap[id]
         // seem a private api, axiBug
         // reference, never manipulate
         browsers = server._injector._instances.launcher._browsers;

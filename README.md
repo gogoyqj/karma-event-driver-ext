@@ -29,7 +29,7 @@ Tips:
 
 + must call $apply, a promise will be returned.
 + if Element has no id, event-drivers-hook js will assign a unique id to it automatically. 
-+ most webdriverio api support[except $, $$, then]. [more api](http://webdriver.io/api.html)
++ aim to simulate event and most webdriverio api support[except $, $$, then and all Window/api]. [more api](http://webdriver.io/api.html)
 
 ### requirements
 
