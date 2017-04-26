@@ -1,7 +1,7 @@
 'use strict';
 
 exports.__esModule = true;
-exports.afterHook = exports.beforeHook = exports.browser = exports.config = exports.loadScript = undefined;
+exports.afterHook = exports.beforeEachHook = exports.beforeHook = exports.browser = exports.config = exports.loadScript = undefined;
 
 var _getOwnPropertyDescriptor = require('babel-runtime/core-js/object/get-own-property-descriptor');
 
@@ -136,7 +136,7 @@ var beforeHook = function () {
                         // Connection = (opener || parent).karma.socket;
                         Connection = io(url);
                         Connection.on('runBack', function (message) {
-                            console.log('runBack', message);
+                            // console.log('runBack', message);
                             message && !message.status ? serialPromiseResolve() : serialPromiseReject(message.status);
                         });
                         // whether there is contextFrame, wait
@@ -198,6 +198,32 @@ var afterHook = function () {
 
     return function afterHook(_x11) {
         return _ref9.apply(this, arguments);
+    };
+}();
+
+/**
+ * run before each test, reset browser status
+ * @return promise
+ */
+var beforeEachHook = function () {
+    var _ref10 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee10(done) {
+        return _regenerator2.default.wrap(function _callee10$(_context10) {
+            while (1) {
+                switch (_context10.prev = _context10.next) {
+                    case 0:
+                        browser.__autoStart = browser.__prom = browser.__rejectSerial = browser.__resolveSerial = null;
+                        done && done();
+
+                    case 2:
+                    case 'end':
+                        return _context10.stop();
+                }
+            }
+        }, _callee10, this);
+    }));
+
+    return function beforeEachHook(_x12) {
+        return _ref10.apply(this, arguments);
     };
 }();
 
@@ -343,11 +369,11 @@ var $Browser = (_class = function () {
         this.__prom = this.__prom || new _promise2.default(function (rs, rj) {
             _this.__resolveSerial = function () {
                 rs();
-                _this.__prom = _this.__resolveSerial = null;
+                beforeEachHook();
             };
             _this.__rejectSerial = function (e) {
                 rj(e);
-                _this.__prom = _this.__rejectSerial = null;
+                beforeEachHook();
             };
         });
 
@@ -569,17 +595,17 @@ function fullScreen() {
     for (var _pro in tar) {
         contextFrame.style[_pro] = tar[_pro];
     }
-};;
-
-exports.default = {
+};;exports.default = {
     loadScript: loadScript,
     config: config,
     browser: browser,
     beforeHook: beforeHook,
+    beforeEachHook: beforeEachHook,
     afterHook: afterHook
 };
 exports.loadScript = loadScript;
 exports.config = config;
 exports.browser = browser;
 exports.beforeHook = beforeHook;
+exports.beforeEachHook = beforeEachHook;
 exports.afterHook = afterHook;

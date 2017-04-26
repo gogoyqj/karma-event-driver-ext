@@ -1,4 +1,4 @@
-import { beforeHook, afterHook, browser } from 'karma-event-driver-ext/cjs/event-driver-hooks';
+import { beforeHook, beforeEachHook, afterHook, browser } from 'karma-event-driver-ext/cjs/event-driver-hooks';
 let { $serial } = browser;
 describe('Event Drive Tests', function() {
     // increase timeout
@@ -12,7 +12,11 @@ describe('Event Drive Tests', function() {
         afterHook(done);
     });
 
-    it('Simple Demo', async (done) => {
+    beforeEach(() => {
+        beforeEachHook();
+    });
+
+    it('Simple Demo', (done) => {
         var div = document.createElement('div');
         document.body.appendChild(div);
         div.innerHTML = 'Click Me';
@@ -27,7 +31,7 @@ describe('Event Drive Tests', function() {
         done();
     });
 
-    it('Async Demo', async (done) => {
+    it('Async Demo', (done) => {
         var div = document.createElement('div');
         div.innerHTML = 'Click Me';
         var a = 1;
@@ -47,7 +51,7 @@ describe('Event Drive Tests', function() {
         done();
     });
 
-    it('React Like Demo', async (done) => {
+    it('React Like Demo', (done) => {
         var div = document.createElement('div');
         div.innerHTML = 'Click Me';
         var a = 1;
@@ -60,9 +64,11 @@ describe('Event Drive Tests', function() {
         };
         let render = () => {
             document.body.appendChild(div);
-            browser.$next();
+            browser.$next(); // start $serial
         }
 
+        // return a promise
+        // won't start executing util browser.$next is called
         $serial(
             async () => {
                 await browser
@@ -75,10 +81,11 @@ describe('Event Drive Tests', function() {
                     .click(div)
                     .$apply('applyAndWaitForNext'); // equal to .$applyAndWaitForNext()
                 expect(a).toBe(5);
-                done();
+                done(); // end 'it'
             }
-        );
+        ); // .then(done, done);
         
+        // before or after $serial both works
         render();
     });
     

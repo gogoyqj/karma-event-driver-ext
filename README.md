@@ -62,9 +62,10 @@ module.exports = {
 
 #### Tests code [get webdriverio api](http://webdriver.io/api.html):
 
+##### basic usage
 
 ```jsx
-    import { beforeHook, afterHook, browser } from 'karma-event-driver-ext/cjs/event-driver-hooks';
+    import { beforeHook, beforeEachHook, afterHook, browser } from 'karma-event-driver-ext/cjs/event-driver-hooks';
     let { $serial } = browser;
     describe('Test', function() {
         // first increase timeout
@@ -74,6 +75,11 @@ module.exports = {
             await beforeHook();
             ...
         })
+
+        // required if using $serial
+        beforeEach(async () => {
+            await beforeEachHook();
+        });
 
         after(async () => {
             ...
@@ -88,6 +94,110 @@ module.exports = {
         })
     });
 ```
+
+##### advanced usage
+
+in specified situation, eg: React Component, tests won't start until componentDidMount trigger, More complex, will pause and wait for componentDidUpdate to resume.
+
+always need wrapping a promise:
+
+```jsx
+it('test', async () => {
+    let rs, rj, prom = new Promise((s, j) => {
+        rs = s;
+        rj = j;
+    })
+    class A extends Component {
+        ...
+
+        componentDidMount() {
+            rs();
+        }
+
+        componentDidUpdate() {
+            rs();
+        }
+
+        click() {
+            this.setState({
+                reRender: true
+            })
+        }
+        render() {
+            return <div id="button">click me</div>
+        }
+        ...
+    }
+    let inst = ReactDom.render(<A/>, document.body);
+    await prom;
+    prom = new Promise((s, j) => {
+        rs = s;
+        rj = j;
+    };
+    await browser
+        .click('#button')
+        .$apply();
+    await prom;
+})
+```
+
+Ext make a new way that use $serial api to wrap test in serial, the use browser.$next(status) to start/resume/reject and $apply('applyAndWaitForNext')/$applyAndWaitForNext() to pause test, $serial return a promise will be resolved if all test finish.
+
+Instead of wrapping promise, u can:
+
+```jsx
+    class A {
+        ...
+        componentDidMount() {
+            browser.$next();
+        }
+
+        componentDidUpdate() {
+            browser.$next();
+        }
+    }
+    
+    ReactDom.render(<A/>, document.body);
+
+    // await or return, $serial return a promise
+    return browser.$serial(
+        async () => {
+            await browser
+                .click('#button')
+                .$apply('applyAndWaitForNext');
+        },
+        async () => {
+            await browser
+                .click('#button')
+                .$applyAndWaitForNext();
+        }
+    );
+```
+
+
+
+If browser.$next() ran before $serial, a resolved promise flag will be assigned to browser. then while calling $serial, if there is a resolved promised flag, serial tests will auto start.
+
+Ensure calling beforeEachHook() in beforeEach if using $serial 
+
+```jsx
+    beforeEach(async () => {
+        await beforeEachHook();
+    });
+``` 
+
+And, once test broke, it won't resume util calling browser.$next()
+
+```jxs
+   await browser
+        .click(xxx)
+        .$applyAndWaitForNext(); // or .$apply('applyAndWaitForNext');
+   // pause here, util browser.$next()
+   pausing code wait for next
+   ...
+```
+
+
                 
 #### Examples
 

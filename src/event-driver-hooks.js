@@ -69,11 +69,11 @@ class $Browser {
         this.__prom = this.__prom || new Promise((rs, rj) => {
             this.__resolveSerial = () => {
                 rs();
-                this.__prom = this.__resolveSerial = null;
+                beforeEachHook();
             };
             this.__rejectSerial = (e) => {
                 rj(e);
-                this.__prom = this.__rejectSerial = null;
+                beforeEachHook();
             };
         });
         tests.forEach((test) => {
@@ -229,7 +229,7 @@ async function beforeHook(done) {
     // Connection = (opener || parent).karma.socket;
     Connection = io(url);
     Connection.on('runBack', (message) => {
-        console.log('runBack', message);
+        // console.log('runBack', message);
         message && !message.status  ? serialPromiseResolve() : serialPromiseReject(message.status);
     });
     // whether there is contextFrame, wait
@@ -260,11 +260,22 @@ async function afterHook(done) {
     done && done();
 };
 
+
+/**
+ * run before each test, reset browser status
+ * @return promise
+ */
+async function beforeEachHook(done) {
+    browser.__autoStart = browser.__prom = browser.__rejectSerial = browser.__resolveSerial = null;
+    done && done();
+}
+
 export default {
     loadScript,
     config,
     browser,
     beforeHook,
+    beforeEachHook,
     afterHook
 }
 
@@ -273,5 +284,6 @@ export {
     config,
     browser,
     beforeHook,
+    beforeEachHook,
     afterHook
 }
