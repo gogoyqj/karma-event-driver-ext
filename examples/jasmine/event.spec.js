@@ -42,7 +42,7 @@ describe('Event Drive Tests', function() {
 
         await browser
             .click(div)
-            .$apply('wait');
+            .$apply('applyAndWaitForNext'); // equal to .$applyAndWaitForNext();
         expect(a).toBe(3);
         done();
     });
@@ -67,13 +67,13 @@ describe('Event Drive Tests', function() {
             async () => {
                 await browser
                     .click(div)
-                    .$apply('wait');
+                    .$apply('applyAndWaitForNext'); // equal to .$applyAndWaitForNext()
                 expect(a).toBe(3);
             },
             async () => {
                 await browser
                     .click(div)
-                    .$apply('wait');
+                    .$apply('applyAndWaitForNext'); // equal to .$applyAndWaitForNext()
                 expect(a).toBe(5);
                 done();
             }

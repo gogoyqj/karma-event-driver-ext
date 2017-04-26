@@ -24,12 +24,12 @@ describe('Event Drive Tests', function() {
 
         await browser
             .click(div)
-            .$apply('wait');
+            .$apply('applyAndWaitForNext'); // equal to .$applyAndWaitForNext()
         expect(a).to.equal(2);
 
         await browser
             .click(div)
-            .$apply('wait');
+            .$apply('applyAndWaitForNext'); // equal to .$applyAndWaitForNext()
 
         expect(a).to.equal(3);
     });
