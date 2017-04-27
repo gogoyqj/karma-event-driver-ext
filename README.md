@@ -27,6 +27,7 @@ webdriverio is used to drive the browser and simulate user-behavior.
 
 Tips: 
 
++ must not hard refresh karma test page [Chrome is fine, while firefox goes wrong unexpectedly]
 + must call $apply, a promise will be returned.
 + if Element has no id, event-drivers-hook js will assign a unique id to it automatically. 
 + aim to simulate event and most webdriverio api support[except $, $$, then and all Window/api]. [more api](http://webdriver.io/api.html)
@@ -53,6 +54,16 @@ module.exports = {
             base: 'WebDriverio',
             browserName: 'chrome',
             name: 'Karma'
+        },
+        'Firefox': {
+            base: 'WebDriverio',
+            browserName: 'firefox',
+            name: 'Karma-Firefox',
+            config: {
+                browserName: 'firefox',
+                host: '127.0.0.1', // default
+                port: '4444' // default
+            }
         }
     },
     browsers: ['Chrome'],
@@ -65,8 +76,13 @@ module.exports = {
 ##### basic usage
 
 ```jsx
-    import { beforeHook, beforeEachHook, afterHook, browser } from 'karma-event-driver-ext/cjs/event-driver-hooks';
+    import { beforeHook, beforeEachHook, afterHook, browser, config } from 'karma-event-driver-ext/cjs/event-driver-hooks';
     let { $serial } = browser;
+    // ext using socket-io to communicate with webdriver-io, host & port is changeable
+    config({
+        host: 127.0.0.1, // default
+        port: 8848       // default, if modified, keep same to init({ port: 8848 })
+    });
     describe('Test', function() {
         // first increase timeout
         ...
@@ -223,7 +239,8 @@ api
     let karmaServer = init({
         onExit: (exitCode) {
             console.log('exitCode',  exitCode);
-        }
+        },
+        port: 8848 // default, same to config({ port: 8848 })
     });
 ```
  
