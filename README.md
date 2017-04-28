@@ -106,6 +106,10 @@ module.exports = {
             await browser
                 .click(document.body)
                 .$apply();
+            
+            await browser
+                .pause(1000)
+                .$apply(); // wait 1000 ms
             ...
         })
     });

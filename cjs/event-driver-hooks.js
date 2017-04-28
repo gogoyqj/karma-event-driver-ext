@@ -35,11 +35,11 @@ var _desc, _value, _class;
  * @return promise
  */
 var loadScript = function () {
-    var _ref6 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee6(src) {
+    var _ref7 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee7(src) {
         var script, rs, rj, timer, prom;
-        return _regenerator2.default.wrap(function _callee6$(_context6) {
+        return _regenerator2.default.wrap(function _callee7$(_context7) {
             while (1) {
-                switch (_context6.prev = _context6.next) {
+                switch (_context7.prev = _context7.next) {
                     case 0:
                         script = document.createElement('script');
 
@@ -61,33 +61,9 @@ var loadScript = function () {
                         timer = setTimeout(function () {
                             return rj('load ' + src + ' time out');
                         }, 10000);
-                        return _context6.abrupt('return', prom);
+                        return _context7.abrupt('return', prom);
 
                     case 9:
-                    case 'end':
-                        return _context6.stop();
-                }
-            }
-        }, _callee6, this);
-    }));
-
-    return function loadScript(_x7) {
-        return _ref6.apply(this, arguments);
-    };
-}();
-
-var wrapPromise = function () {
-    var _ref7 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee7(fn) {
-        var wait = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-        return _regenerator2.default.wrap(function _callee7$(_context7) {
-            while (1) {
-                switch (_context7.prev = _context7.next) {
-                    case 0:
-                        return _context7.abrupt('return', new _promise2.default(function (resolve, reject) {
-                            wait ? fn(resolve, reject) : resolve();
-                        }));
-
-                    case 1:
                     case 'end':
                         return _context7.stop();
                 }
@@ -95,8 +71,32 @@ var wrapPromise = function () {
         }, _callee7, this);
     }));
 
-    return function wrapPromise(_x8) {
+    return function loadScript(_x8) {
         return _ref7.apply(this, arguments);
+    };
+}();
+
+var wrapPromise = function () {
+    var _ref8 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee8(fn) {
+        var wait = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+        return _regenerator2.default.wrap(function _callee8$(_context8) {
+            while (1) {
+                switch (_context8.prev = _context8.next) {
+                    case 0:
+                        return _context8.abrupt('return', new _promise2.default(function (resolve, reject) {
+                            wait ? fn(resolve, reject) : resolve();
+                        }));
+
+                    case 1:
+                    case 'end':
+                        return _context8.stop();
+                }
+            }
+        }, _callee8, this);
+    }));
+
+    return function wrapPromise(_x9) {
+        return _ref8.apply(this, arguments);
     };
 }();
 /**
@@ -107,28 +107,28 @@ var wrapPromise = function () {
 
 
 var beforeHook = function () {
-    var _ref8 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee8(done) {
+    var _ref9 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee9(done) {
         var _config2, url, host, port;
 
-        return _regenerator2.default.wrap(function _callee8$(_context8) {
+        return _regenerator2.default.wrap(function _callee9$(_context9) {
             while (1) {
-                switch (_context8.prev = _context8.next) {
+                switch (_context9.prev = _context9.next) {
                     case 0:
                         // height & width : 100%
                         fullScreen();
 
                         if (!initialled) {
-                            _context8.next = 3;
+                            _context9.next = 3;
                             break;
                         }
 
-                        return _context8.abrupt('return', done && done());
+                        return _context9.abrupt('return', done && done());
 
                     case 3:
                         _config2 = _config, url = _config2.url, host = _config2.host, port = _config2.port;
 
                         if (!url) url = host + ':' + port;
-                        _context8.next = 7;
+                        _context9.next = 7;
                         return loadScript('//' + url + '/socket.io/socket.io.js');
 
                     case 7:
@@ -154,7 +154,7 @@ var beforeHook = function () {
                                 resolve();
                             });
                         });
-                        _context8.next = 12;
+                        _context9.next = 12;
                         return waitingPromise;
 
                     case 12:
@@ -163,14 +163,14 @@ var beforeHook = function () {
 
                     case 14:
                     case 'end':
-                        return _context8.stop();
+                        return _context9.stop();
                 }
             }
-        }, _callee8, this);
+        }, _callee9, this);
     }));
 
-    return function beforeHook(_x10) {
-        return _ref8.apply(this, arguments);
+    return function beforeHook(_x11) {
+        return _ref9.apply(this, arguments);
     };
 }();
 
@@ -180,38 +180,12 @@ var beforeHook = function () {
  * @return promise
  */
 var afterHook = function () {
-    var _ref9 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee9(done) {
-        return _regenerator2.default.wrap(function _callee9$(_context9) {
-            while (1) {
-                switch (_context9.prev = _context9.next) {
-                    case 0:
-                        fullScreen(false);
-                        done && done();
-
-                    case 2:
-                    case 'end':
-                        return _context9.stop();
-                }
-            }
-        }, _callee9, this);
-    }));
-
-    return function afterHook(_x11) {
-        return _ref9.apply(this, arguments);
-    };
-}();
-
-/**
- * run before each test, reset browser status
- * @return promise
- */
-var beforeEachHook = function () {
     var _ref10 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee10(done) {
         return _regenerator2.default.wrap(function _callee10$(_context10) {
             while (1) {
                 switch (_context10.prev = _context10.next) {
                     case 0:
-                        browser.__autoStart = browser.__prom = browser.__rejectSerial = browser.__resolveSerial = null;
+                        fullScreen(false);
                         done && done();
 
                     case 2:
@@ -222,8 +196,34 @@ var beforeEachHook = function () {
         }, _callee10, this);
     }));
 
-    return function beforeEachHook(_x12) {
+    return function afterHook(_x12) {
         return _ref10.apply(this, arguments);
+    };
+}();
+
+/**
+ * run before each test, reset browser status
+ * @return promise
+ */
+var beforeEachHook = function () {
+    var _ref11 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee11(done) {
+        return _regenerator2.default.wrap(function _callee11$(_context11) {
+            while (1) {
+                switch (_context11.prev = _context11.next) {
+                    case 0:
+                        browser.__autoStart = browser.__prom = browser.__rejectSerial = browser.__resolveSerial = null;
+                        done && done();
+
+                    case 2:
+                    case 'end':
+                        return _context11.stop();
+                }
+            }
+        }, _callee11, this);
+    }));
+
+    return function beforeEachHook(_x13) {
+        return _ref11.apply(this, arguments);
     };
 }();
 
@@ -409,6 +409,37 @@ var $Browser = (_class = function () {
         return this.__prom;
     };
     /**
+     * @public $pause return promise resolved after timeout ms
+     * also: await browser.pause(timeout).$apply(); // > timeout, since I/O with socket server
+     * @param {Number} timeout ms
+     */
+
+
+    $Browser.prototype.$pause = function () {
+        var _ref3 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee3(timeout) {
+            return _regenerator2.default.wrap(function _callee3$(_context3) {
+                while (1) {
+                    switch (_context3.prev = _context3.next) {
+                        case 0:
+                            return _context3.abrupt('return', new _promise2.default(function (rs) {
+                                setTimeout(rs, timeout);
+                            }));
+
+                        case 1:
+                        case 'end':
+                            return _context3.stop();
+                    }
+                }
+            }, _callee3, this);
+        }));
+
+        function $pause(_x2) {
+            return _ref3.apply(this, arguments);
+        }
+
+        return $pause;
+    }();
+    /**
      * @public $apply execute right now
      * @param {Boolean} applyAndWaitForNext wait for calling browser.$next
      * @param {Function} done callback
@@ -417,22 +448,22 @@ var $Browser = (_class = function () {
 
 
     $Browser.prototype.$apply = function () {
-        var _ref3 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee4(applyAndWaitForNext, done) {
+        var _ref4 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee5(applyAndWaitForNext, done) {
             var _this2 = this;
 
             var actions, executerPromiseResolve, executerPromiseReject, prom;
-            return _regenerator2.default.wrap(function _callee4$(_context4) {
+            return _regenerator2.default.wrap(function _callee5$(_context5) {
                 while (1) {
-                    switch (_context4.prev = _context4.next) {
+                    switch (_context5.prev = _context5.next) {
                         case 0:
                             actions = this.__stack.splice(0);
 
                             if (initialled) {
-                                _context4.next = 3;
+                                _context5.next = 3;
                                 break;
                             }
 
-                            return _context4.abrupt('return', console.error('ensure beforeHook has been called'));
+                            return _context5.abrupt('return', console.error('ensure beforeHook has been called'));
 
                         case 3:
                             executerPromiseResolve = void 0, executerPromiseReject = void 0;
@@ -446,32 +477,32 @@ var $Browser = (_class = function () {
                                 console.log('add a waiting promise, ensure browser.$next(status) is called at right time');
                                 // !!status === true, then reject
                                 this.__tests.unshift(function () {
-                                    var _ref4 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee3(status) {
-                                        return _regenerator2.default.wrap(function _callee3$(_context3) {
+                                    var _ref5 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee4(status) {
+                                        return _regenerator2.default.wrap(function _callee4$(_context4) {
                                             while (1) {
-                                                switch (_context3.prev = _context3.next) {
+                                                switch (_context4.prev = _context4.next) {
                                                     case 0:
                                                         !!status ? executerPromiseReject(status) : executerPromiseResolve();
 
                                                     case 1:
                                                     case 'end':
-                                                        return _context3.stop();
+                                                        return _context4.stop();
                                                 }
                                             }
-                                        }, _callee3, _this2);
+                                        }, _callee4, _this2);
                                     }));
 
-                                    return function (_x4) {
-                                        return _ref4.apply(this, arguments);
+                                    return function (_x5) {
+                                        return _ref5.apply(this, arguments);
                                     };
                                 }());
                             };
-                            _context4.next = 9;
+                            _context5.next = 9;
                             return waitingPromise;
 
                         case 9:
                             if (!actions.length) {
-                                _context4.next = 14;
+                                _context5.next = 14;
                                 break;
                             }
 
@@ -480,11 +511,11 @@ var $Browser = (_class = function () {
                                 serialPromiseReject = reject;
                             }, contextFrame);
                             this.__callDriver(actions);
-                            _context4.next = 14;
+                            _context5.next = 14;
                             return waitingPromise;
 
                         case 14:
-                            _context4.next = 16;
+                            _context5.next = 16;
                             return prom;
 
                         case 16:
@@ -492,14 +523,14 @@ var $Browser = (_class = function () {
 
                         case 17:
                         case 'end':
-                            return _context4.stop();
+                            return _context5.stop();
                     }
                 }
-            }, _callee4, this);
+            }, _callee5, this);
         }));
 
-        function $apply(_x2, _x3) {
-            return _ref3.apply(this, arguments);
+        function $apply(_x3, _x4) {
+            return _ref4.apply(this, arguments);
         }
 
         return $apply;
@@ -510,24 +541,24 @@ var $Browser = (_class = function () {
 
 
     $Browser.prototype.$applyAndWaitForNext = function () {
-        var _ref5 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee5(done) {
-            return _regenerator2.default.wrap(function _callee5$(_context5) {
+        var _ref6 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee6(done) {
+            return _regenerator2.default.wrap(function _callee6$(_context6) {
                 while (1) {
-                    switch (_context5.prev = _context5.next) {
+                    switch (_context6.prev = _context6.next) {
                         case 0:
-                            _context5.next = 2;
+                            _context6.next = 2;
                             return this.$apply(true, done);
 
                         case 2:
                         case 'end':
-                            return _context5.stop();
+                            return _context6.stop();
                     }
                 }
-            }, _callee5, this);
+            }, _callee6, this);
         }));
 
-        function $applyAndWaitForNext(_x5) {
-            return _ref5.apply(this, arguments);
+        function $applyAndWaitForNext(_x6) {
+            return _ref6.apply(this, arguments);
         }
 
         return $applyAndWaitForNext;

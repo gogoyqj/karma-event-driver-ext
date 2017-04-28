@@ -90,6 +90,16 @@ class $Browser {
         return this.__prom;
     }
     /**
+     * @public $pause return promise resolved after timeout ms
+     * also: await browser.pause(timeout).$apply(); // > timeout, since I/O with socket server
+     * @param {Number} timeout ms
+     */
+    async $pause (timeout) {
+        return new Promise((rs) => {
+            setTimeout(rs, timeout);
+        });
+    }
+    /**
      * @public $apply execute right now
      * @param {Boolean} applyAndWaitForNext wait for calling browser.$next
      * @param {Function} done callback
