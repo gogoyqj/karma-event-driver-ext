@@ -230,9 +230,11 @@ cli
     java -jar selenium-server-standalone-3.3.1.jar
     // start karma server && event-driver server
     node node_modules/karma-event-driver-ext
+    // or 
+    ./node_modules/.bin/karma-event-driver-ext
 ```
 
-api
+api: runner.js
 
 ```jsx
     let ext, { init } = require('karma-event-driver-ext');
@@ -242,5 +244,12 @@ api
         },
         port: 8848 // default, same to config({ port: 8848 })
     });
+```
+
+
+```
+    node runner.js
+    // or 
+    ./node_modules/.bin/karma-event-driver-ext runner.js
 ```
  

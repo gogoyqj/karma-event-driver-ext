@@ -1,6 +1,6 @@
 {
     "name": "karma-event-driver-ext",
-    "version": "0.0.8",
+    "version": "0.0.9",
     "description": "exports webdriverio/robotjs api to simulate user behavior in browser lol",
     "main": "cjs/index.js",
     "jsnext:main": "src/index.js",
@@ -25,6 +25,9 @@
     "license": "MIT",
     "bugs": {
         "url": "https://github.com/gogoyqj/karma-event-driver-ext/issues"
+    },
+    "bin": {
+        "karma-event-driver-ext": "./karma-event-driver-ext"
     },
     "homepage": "https://github.com/gogoyqj/karma-event-driver-ext#readme",
     "devDependencies": {
