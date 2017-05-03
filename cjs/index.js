@@ -15,6 +15,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var Server = require('karma').Server;
 var path = require('path');
+var cwd = process.cwd();
+var configPath = path.resolve(__dirname, path.join(cwd, './karma.conf.js'));
 
 // browsers with driver
 var browsers = [];
@@ -33,7 +35,7 @@ function sendBack(socket, message) {
 var supportedDefs = void 0;
 
 var cfg = require('karma').config;
-var karmaConfig = cfg.parseConfig(path.resolve('./karma.conf.js'), {
+var karmaConfig = cfg.parseConfig(configPath, {
     port: 9876,
     _singleRun: true // finished auto exit
 });

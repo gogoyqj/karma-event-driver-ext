@@ -161,7 +161,7 @@ it('test', async () => {
 })
 ```
 
-Ext make a new way that use $serial api to wrap test in serial, the use browser.$next(status) to start/resume/reject and $apply('applyAndWaitForNext')/$applyAndWaitForNext() to pause test, $serial return a promise will be resolved if all test finish.
+Ext makes a new way that use $serial api to wrap test in serial, then use browser.$next(status) to start/resume/reject and $apply('applyAndWaitForNext')/$applyAndWaitForNext() to pause test, $serial return a promise which will be resolved if all tests finished.
 
 Instead of wrapping promise, u can:
 
@@ -255,5 +255,8 @@ api: runner.js
     node runner.js
     // or 
     ./node_modules/.bin/karma-event-driver-ext runner.js
+
+    // or if npm install -g: ^0.0.10
+    // karma-event-driver-ext runner.js
 ```
  

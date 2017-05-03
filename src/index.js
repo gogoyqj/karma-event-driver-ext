@@ -1,5 +1,7 @@
 const Server = require('karma').Server;
 const path = require('path');
+const cwd = process.cwd();
+const configPath = path.resolve(__dirname, path.join(cwd, './karma.conf.js'));
 
 // browsers with driver
 let browsers = [];
@@ -16,7 +18,7 @@ function sendBack(socket, message) {
 let supportedDefs;
 
 const cfg = require('karma').config;
-const karmaConfig = cfg.parseConfig(path.resolve('./karma.conf.js'), {
+const karmaConfig = cfg.parseConfig(configPath, {
     port: 9876,
     _singleRun: true // finished auto exit
 });
