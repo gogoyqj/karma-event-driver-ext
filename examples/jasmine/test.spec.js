@@ -16,7 +16,7 @@ describe('Event Drive Tests', function() {
         beforeEachHook();
     });
 
-    it('Simple Demo', (done) => {
+    it('Simple Demo', async (done) => {
         var div = document.createElement('div');
         document.body.appendChild(div);
         div.innerHTML = 'Click Me';
@@ -31,7 +31,7 @@ describe('Event Drive Tests', function() {
         done();
     });
 
-    it('Async Demo', (done) => {
+    it('Async Demo', async (done) => {
         var div = document.createElement('div');
         div.innerHTML = 'Click Me';
         var a = 1;
