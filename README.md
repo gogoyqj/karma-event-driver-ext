@@ -256,7 +256,7 @@ api: runner.js
     // or 
     ./node_modules/.bin/karma-event-driver-ext runner.js
 
-    // or if npm install -g: ^0.0.10
+    // or if npm install -g: ^0.0.10, ensure all dependencies installed -g.
     // karma-event-driver-ext runner.js
 ```
  
