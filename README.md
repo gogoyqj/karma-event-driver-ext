@@ -67,6 +67,11 @@ module.exports = {
         }
     },
     browsers: ['Chrome'],
+    // if plugins assigned, should:
+    // since with plugins, karma won't auto load karma-* modules
+    plugins: [
+        'karma-webdriverio-launcher'
+    ]
     ...
 }
 ```
