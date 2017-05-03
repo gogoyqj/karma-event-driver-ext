@@ -4,8 +4,10 @@ var coverage = String(process.env.COVERAGE) !== 'false'
 
 module.exports = function(config) {
     config.set({
+
         // base path that will be used to resolve all patterns (eg. files, exclude)
         //  basePath: '',
+
 
         // frameworks to use
         // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
@@ -13,9 +15,7 @@ module.exports = function(config) {
 
 
         // list of files / patterns to load in the browser
-        files: [{
-            pattern: './*.spec.js'
-        }],
+        files: ['./test/*.spec.js'],
 
 
         // list of files to exclude
@@ -28,10 +28,12 @@ module.exports = function(config) {
         // test results reporter to use
         // possible values: 'dots', 'progress'
         // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-        reporters: ['progress', 'coverage'],
+        reporters: ['spec', 'coverage'],
         preprocessors: {
-            '*.spec.js': ['webpack']
+            './test/*.spec.js': ['webpack'],
+            './src/*.js': ['webpack', 'coverage']
         },
+        mochaReporter: { showDiff: true },
         browserLogOptions: {
             terminal: true
         },
@@ -47,42 +49,33 @@ module.exports = function(config) {
             module: {
                 /* Transpile source and test files */
                 preLoaders: [{
-                    test: /\.js$/,
+                    test: /\.jsx?$/,
                     exclude: path.resolve(__dirname, 'node_modules'),
                     loader: 'babel-loader',
                     query: {
-                        presets: [
-                            ['latest', {
-                                es2015: {
-                                    loose: true
-                                }
-                            }], 'stage-0', 'react'
-                        ],
-                        plugins: ['istanbul', 'syntax-async-generators', ["transform-runtime", {
-                            "helpers": true,
-                            "polyfill": true,
-                            "regenerator": true,
-                            "moduleName": "babel-runtime"
-                        }]],
-                        babelrc: false
+                        plugins: ['istanbul'],
+                        babelrc: true
                     }
                 }],
                 /* Only Instrument our source files for coverage */
                 loaders: []
             },
             resolve: {
-                alias: {
-                },
+
+                alias: {},
                 modulesDirectories: [__dirname, 'node_modules']
             },
             plugins: [
-                new webpack.DefinePlugin({
+                new webpack.DefinePlugin({ //添加全局变量
                     coverage: coverage,
                     NODE_ENV: JSON.stringify(process.env.NODE_ENV || ''),
                 })
             ]
         },
-        hostname: '127.0.0.1',
+        webpackMiddleware: {
+            noInfo: true //去掉编译文件的LOG
+        },
+        //hostname: '127.0.0.1',
         // web server port
         port: 9876,
 
@@ -93,10 +86,11 @@ module.exports = function(config) {
 
         // level of logging
         // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-        logLevel: config.LOG_INFO,
+        //    logLevel: config.LOG_INFO,
 
 
         // enable / disable watching file and executing tests whenever any file changes
+        autoWatch: true,
 
 
         // start these browsers
@@ -117,10 +111,6 @@ module.exports = function(config) {
 
         // Concurrency level
         // how many browser should be started simultaneous
-        concurrency: Infinity,
-
-        webpackMiddleware: {
-            noInfo: true
-        }
+        concurrency: Infinity
     })
 }
