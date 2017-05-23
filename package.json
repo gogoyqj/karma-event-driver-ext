@@ -1,6 +1,6 @@
 {
     "name": "karma-event-driver-ext",
-    "version": "0.0.10",
+    "version": "0.0.11",
     "description": "exports webdriverio/robotjs api to simulate user behavior in browser lol",
     "main": "cjs/index.js",
     "jsnext:main": "src/index.js",

@@ -1,0 +1,6 @@
+examples/*
+coverage/*
+test/*
+test/driver.spec.js
+.npmignore
+.gitignore

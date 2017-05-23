@@ -1,7 +1,7 @@
 import { beforeHook, beforeEachHook, afterHook, browser, config } from '../src/event-driver-hooks.js';
 let { $serial } = browser;
 config({
-    host: '127.0.0.1',
+    host: 'localhost',
     port: 8848
 })
 describe('Event Drive Tests', function() {

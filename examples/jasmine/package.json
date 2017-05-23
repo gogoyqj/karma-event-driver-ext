@@ -18,7 +18,7 @@
         "karma": "^1.5",
         "karma-chrome-launcher": "^2.0.0",
         "karma-coverage": "^1.1.1",
-        "karma-event-driver-ext": "git+ssh://git@github.com/gogoyqj/karma-event-driver-ext.git",
+        "karma-event-driver-ext": "^0.0.6",
         "karma-jasmine": "^1.1.0",
         "karma-spec-reporter": "0.0.30",
         "karma-webpack": "^2.0.3",

@@ -1,4 +1,6 @@
-import eventHook, { beforeHook, beforeEachHook, afterHook, browser } from 'karma-event-driver-ext/cjs/event-driver-hooks';
+import { beforeHook, beforeEachHook, afterHook, browser } from 'karma-event-driver-ext/cjs/event-driver-hooks';
+import React from 'react';
+import ReactDOM from 'react-dom';
 let { $serial } = browser;
 
 describe('Event Drive Tests', function() {
@@ -38,8 +40,6 @@ describe('Event Drive Tests', function() {
     });
 
     it('Test Default', async () => {
-        let React = react;
-        let ReactDOM = react;
         class Select extends React.Component {
             constructor() {
                 super();
@@ -65,7 +65,7 @@ describe('Event Drive Tests', function() {
 
             render() {
                 return <select name='city' id='city'
-                    value={this.state.city} onChange={this.handleCity}>
+                    value={this.state.city} onChange={this.handleCity.bind(this)}>
                     <option value='hz'>杭州</option>
                     <option value='bj'>北京</option>
                     <option value='sh'>上海</option>
@@ -82,13 +82,13 @@ describe('Event Drive Tests', function() {
                 await browser
                     .selectByVisibleText('select', '上海')
                     .$apply('applyAndWaitForNext');
-                expect(document.getElementById('city')children[2].selected).toBe(true)
+                expect(document.getElementById('city').children[2].selected).to.equal(true)
             },
             async () => {
                 await browser
                     .selectByVisibleText('select', '杭州')
                     .$applyAndWaitForNext();
-                expect(document.getElementById('city').children[0].selected).toBe(true)
+                expect(document.getElementById('city').children[0].selected).to.equal(true)
             }
         );
     });

@@ -120,7 +120,7 @@ class $Browser {
             this.__tests.unshift(async (status) => {
                 !!status ? executerPromiseReject(status) : executerPromiseResolve()
             });
-        };
+        }
         await waitingPromise;
         if (actions.length) {
             waitingPromise = wrapPromise((resolve, reject) => {
@@ -258,7 +258,7 @@ async function beforeHook(done) {
     await waitingPromise;
     initialled = true;
     done && done();
-};
+}
 
 /**
  * run last in after()
@@ -268,7 +268,7 @@ async function beforeHook(done) {
 async function afterHook(done) {
     fullScreen(false);
     done && done();
-};
+}
 
 
 /**
