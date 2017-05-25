@@ -1,4 +1,5 @@
 import { autobind } from 'core-decorators';
+const touchSupport = ('ontouchstart' in window) && (navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0);
 /**
  * browser side hooks for webdriver based event drive test
  */
@@ -29,9 +30,9 @@ if (contextFrame) {
     }
 }
 
-function noop() {}
+function noop() { }
 
-let initialled, $$Browser; 
+let initialled, $$Browser;
 
 // webdriver api serial
 let waitingPromise = Promise.resolve();
@@ -49,7 +50,7 @@ class $Browser {
      * @param {any} status !!status ? reject(status) : resolve()
      */
     @autobind
-    async $next (status) {
+    async $next(status) {
         let action = this.__tests.shift();
         // call before $serial
         if (!action && !this.__autoStart) this.__autoStart = true;
@@ -65,7 +66,7 @@ class $Browser {
      * @return {Promise} 
      */
     @autobind
-    $serial (...tests) {
+    $serial(...tests) {
         this.__prom = this.__prom || new Promise((rs, rj) => {
             this.__resolveSerial = () => {
                 rs();
@@ -94,7 +95,7 @@ class $Browser {
      * also: await browser.pause(timeout).$apply(); // > timeout, since I/O with socket server
      * @param {Number} timeout ms
      */
-    async $pause (timeout) {
+    async $pause(timeout) {
         return new Promise((rs) => {
             setTimeout(rs, timeout);
         });
@@ -105,7 +106,7 @@ class $Browser {
      * @param {Function} done callback
      * @return {Promise} if !!applyAndWaitForNext === false return a resolved promise, else a promise not resolved until browser.$next being called
      */
-    async $apply (applyAndWaitForNext, done) {
+    async $apply(applyAndWaitForNext, done) {
         let actions = this.__stack.splice(0);
         if (!initialled) return console.error('ensure beforeHook has been called');
         let executerPromiseResolve, executerPromiseReject;
@@ -136,7 +137,7 @@ class $Browser {
     /**
      * @public $applyAndWaitForNext equal to $$action('applyAndWaitForNext')
      */
-    async $applyAndWaitForNext (done) {
+    async $applyAndWaitForNext(done) {
         await this.$apply(true, done);
     }
     /**
@@ -157,7 +158,7 @@ class $Browser {
      * @param {string} def api name
      * @param {any} args arguments
      */
-     __toRunnable(def, ...args) {
+    __toRunnable(def, ...args) {
         this.__stack.push([
             def,
             args.map((ele) => {
@@ -176,10 +177,10 @@ class $Browser {
     }
 }
 
-function Browser () {
+function Browser() {
     this.__tests = []; // for register tests
     this.__stack = [];// tmp stack for browser[api]
-    this.__prom  = null;
+    this.__prom = null;
 }
 
 $$Browser = Browser.prototype = new $Browser();
@@ -240,7 +241,7 @@ async function beforeHook(done) {
     Connection = io(url);
     Connection.on('runBack', (message) => {
         // console.log('runBack', message);
-        message && !message.status  ? serialPromiseResolve() : serialPromiseReject(message.status);
+        message && !message.status ? serialPromiseResolve() : serialPromiseReject(message.status);
     });
     // whether there is contextFrame, wait
     waitingPromise = wrapPromise((resolve) => {
@@ -252,12 +253,65 @@ async function beforeHook(done) {
                 };
             });
             // console.log('ready', message);
+            routePCToMobile();
             resolve();
         });
     });
     await waitingPromise;
     initialled = true;
     done && done();
+}
+
+function getPos(ele) {
+    return ele && (ele.nodeName && ele || document.querySelector(ele)).getBoundingClientRect();
+}
+/**
+ * @private route PC support api like moveTo to mobile, write once run both sides.
+ */
+function routePCToMobile() {
+    if (touchSupport) {
+        let curX = 0, curY = 0, isTouchDown = false;
+        let dict = {
+            'moveToObject': function (ele, x, y) {
+                let pos = getPos(ele);
+                if (pos) {
+                    if (x != null) curX = pos.left + x;
+                    if (y != null) curY = pos.top + y;
+                } else {
+                    if (x != null) curX = curX + x;
+                    if (y != null) curY = curY + y;
+                }
+                if (curX < 0) curX = 0;
+                if (curY < 0) curY = 0;
+                return browser;
+            },
+            'moveTo': function (ele, x, y) {
+                browser.moveToObject(ele, x, y);
+                return isTouchDown ? browser.touchMove(curX, curY) : browser;
+            },
+            'click': function (ele) {
+                return browser.touch(ele, { x: 0, y: 0 });
+            },
+            'buttonDown': function () {
+                isTouchDown = true;
+                return browser.touchDown(curX, curY);
+            },
+            'buttonUp': function () {
+                isTouchDown = false;
+                browser.touchUp(curX, curY);
+                curX = curY = 0;
+                return browser;
+            },
+            'leftClick': function (ele) {
+                return browser.touchPerform('tap', {
+                    ele: ele
+                })
+            }
+        };
+        for (let name in dict) {
+            browser[name] = typeof dict[name] === 'string' ? browser[dict[name]] : dict[name];
+        }
+    }
 }
 
 /**
