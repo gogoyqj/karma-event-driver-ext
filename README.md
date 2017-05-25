@@ -18,6 +18,14 @@ for example, in your browser side test code, call webdriverio api to simulate dr
             .$apply(); // execute
 ```
 
+#### <font color="red">LOL Good News!!!</font>
+
+Since version <b>0.0.13</b>, ext will auto route apis for PC to mobile support apis, for example: 
+
+`moveToObject(ele, x, y) + buttonDown()` => `touchDown(ele.left + x, ele.top + y)` 
+
+[more detail@event-driver-hooks.js](./src/event-driver-hooks.js). Then most of ur tests can run both sides of PC and mobile, Write once, run twice.
+
 #### How it works
 
 browser in karma-event-driver-ext is just a proxy to receive command. while a webdriverio-like api being called, proxy will format arguments received, for example, convert an argument which type is Element to unique query, then call $apply to sends drive-commands to socket server and wait for executing response. 

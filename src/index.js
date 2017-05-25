@@ -36,7 +36,7 @@ let init = ({ onExit, port = 8848 } = {}) => {
 
     server.on('browser_register', (browser) => {
         // reload full page will trigger browser_register, then iframe#context will lose focus
-        let { id } = browser;
+        // let { id } = browser;
         // seem a private api, axiBug
         // reference, never manipulate
         browsers = server._injector._instances.launcher._browsers;

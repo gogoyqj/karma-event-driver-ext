@@ -1,6 +1,6 @@
 {
     "name": "karma-event-driver-ext",
-    "version": "0.0.10",
+    "version": "0.0.13",
     "description": "exports webdriverio/robotjs api to simulate user behavior in browser lol",
     "main": "cjs/index.js",
     "jsnext:main": "src/index.js",
@@ -53,6 +53,6 @@
         "babel-polyfill": "^6.23.0",
         "core-decorators": "^0.17.0",
         "karma": "^1.6.0",
-        "karma-webdriverio-launcher": "git+ssh://git@github.com/gogoyqj/karma-webdriver-launcher.git"
+        "karma-webdriverio-launcher": "0.0.1"
     }
 }
