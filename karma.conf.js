@@ -1,7 +1,6 @@
 var path = require('path')
 var webpack = require('webpack')
 var coverage = String(process.env.COVERAGE) !== 'false'
-
 module.exports = function(config) {
     config.set({
 
@@ -28,7 +27,7 @@ module.exports = function(config) {
         // test results reporter to use
         // possible values: 'dots', 'progress'
         // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-        reporters: ['spec', 'coverage'],
+        reporters: ['coverage'],
         preprocessors: {
             './test/*.spec.js': ['webpack'],
             './src/*.js': ['webpack', 'coverage']
@@ -101,9 +100,21 @@ module.exports = function(config) {
                 base: 'WebDriverio',
                 browserName: 'chrome',
                 name: 'Karma'
+            },
+            'Chrome-SauceLabs': {
+                base: 'WebDriverio',
+                browserName: 'chrome',
+                name: 'Karma',
+                config: {
+                    host: 'localhost',
+                    port: 4445,
+                    logLevel: 'verbose',
+                    user: process.env.SAUCE_USERNAME,
+                    key: process.env.SAUCE_ACCESS_KEY
+                }
             }
         },
-        browsers: ['Chrome'],
+        browsers: [ process.env.TRAVIS ? 'Chrome-SauceLabs' : 'Chrome'],
 
         // Continuous Integration mode
         // if true, Karma captures browsers, runs the tests and exits
