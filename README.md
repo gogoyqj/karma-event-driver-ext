@@ -18,7 +18,9 @@ for example, in your browser side test code, call webdriverio api to simulate dr
             .$apply(); // execute
 ```
 
-#### <font color="red">LOL Good News!!!</font>
+#### LOL Good News!!!
+
+<font color="red">Warning</font>Feature rely on WebdriverIO, seems a bug need to be fixed, detail [Issue](https://github.com/webdriverio/webdriverio/issues/2104).
 
 Since version <b>0.0.13</b>, ext will auto route apis for PC to mobile support apis, for example: 
 
