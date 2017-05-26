@@ -14,7 +14,16 @@ cache:
 branches:
   only:
   - dev
-addons:
-  sauce_connect: true
+# won't work!!
+# addons:
+#   sauce_connect: true
+before_install:
+- |
+    sudo apt-get install wget
+    wget https://saucelabs.com/downloads/sc-4.4.6-linux.tar.gz
+    tar -zxvf sc-4.4.6-linux.tar.gz
+    sudo chmod u+x sc-4.4.6-linux/bin/sc
+    ./sc-4.4.6-linux/bin/sc -u $SAUCE_USERNAME -k $SAUCE_ACCESS_KEY -f sauce-connect-ready-16721 -l /home/travis/sauce-connect.log > /dev/null 2>&1 &
+    sleep 30
 script:
 - npm run test

@@ -109,6 +109,8 @@ module.exports = function(config) {
                     host: 'localhost',
                     port: 4445,
                     logLevel: 'verbose',
+                    name: 'integration',
+                    'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
                     user: process.env.SAUCE_USERNAME,
                     key: process.env.SAUCE_ACCESS_KEY
                 }
