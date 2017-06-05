@@ -3,7 +3,7 @@
 ### Introduction
 ----------------
 
-[![Logic](./logic.jpeg)](xx)
+[![Logic](./logic.jpeg?v=2)](xx)
 
 This project aims to integrate webdriverio into karma, for writing event-drive-tests conveniently.
 
