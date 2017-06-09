@@ -1,6 +1,6 @@
 ## karma-event-driver-ext
 
-[![Build Status](https://travis-ci.org/gogoyqj/karma-event-driver-ext.svg?branch=master)](https://travis-ci.org/gogoyqj/karma-event-driver-ext)
+[![Build Status](https://travis-ci.org/gogoyqj/karma-event-driver-ext.svg?branch=dev)](https://travis-ci.org/gogoyqj/karma-event-driver-ext)
 
 ### Introduction
 ----------------
