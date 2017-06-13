@@ -1,9 +1,11 @@
 ## karma-event-driver-ext
 
+[![Build Status](https://travis-ci.org/gogoyqj/karma-event-driver-ext.svg?branch=dev)](https://travis-ci.org/gogoyqj/karma-event-driver-ext)
+
 ### Introduction
 ----------------
 
-[![Logic](./logic.jpeg)](xx)
+[![Logic](./logic.jpeg?v=2)](xx)
 
 This project aims to integrate webdriverio into karma, for writing event-drive-tests conveniently.
 
