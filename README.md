@@ -1,5 +1,7 @@
 ## karma-event-driver-ext
 
+[![Join the chat at https://gitter.im/karma-event-driver-ext/Lobby](https://badges.gitter.im/karma-event-driver-ext/Lobby.svg)](https://gitter.im/karma-event-driver-ext/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![Build Status](https://travis-ci.org/gogoyqj/karma-event-driver-ext.svg?branch=dev)](https://travis-ci.org/gogoyqj/karma-event-driver-ext)
 
 ### Introduction
